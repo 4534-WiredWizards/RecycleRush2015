@@ -1,0 +1,7 @@
+package org.usfirst.frc.team4534.robot;
+
+public class AnalogGyro {
+	public AnalogGyro() {
+		
+	}
+}

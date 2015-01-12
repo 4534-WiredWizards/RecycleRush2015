@@ -1,0 +1,13 @@
+package org.usfirst.frc.team4534.robot;
+
+public class AnalogGyro {
+	AnalogInput gyro;
+	
+	public AnalogGyro(int channel) {
+		
+	}
+	
+	void initGyro() {
+		
+	}
+}
