@@ -1,0 +1,19 @@
+INDEX VERSION 1.127+C:\Users\Samuel\Documents\RecycleRush2015\.metadata\.plugins\org.eclipse.jdt.core
+1348710767.index
+3326529516.index
+2346237577.index
+55593696.index
+1740101647.index
+14507210.index
+1530861385.index
+2518246714.index
+3766575865.index
+1870094127.index
+2961793328.index
+1576913576.index
+1061609049.index
+199186984.index
+1039617268.index
+3751413.index
+1653389528.index
+3097711138.index
