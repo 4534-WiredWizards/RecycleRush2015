@@ -1,0 +1,7 @@
+package org.usfirst.frc.team4534.robot;
+
+public class AnalogGyroThread extends Thread{
+	public void run() {
+		
+	}
+}
