@@ -28,7 +28,6 @@ public class AnalogGyro {
 		gyro = new AnalogInput(channelGyro);
 		temp = new AnalogInput(channelTemp);
 		isTemp = true;
-		initTemp();
 		initGyro();
 	}
 	
@@ -72,13 +71,6 @@ public class AnalogGyro {
 	}
 	
 	public static void initGyro() {
-		initGyro(null);
-	}
-	
-	public static void initGyro(Double temp) {
-		
-		boolean useTemp = !(temp == null);
-		
 		while(values.size() <= SAMPLE_SIZE) {
 			values.add(gyro.getVoltage());
 		}

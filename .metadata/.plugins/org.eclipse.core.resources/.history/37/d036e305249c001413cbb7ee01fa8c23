@@ -77,7 +77,7 @@ public class AnalogGyro {
 	
 	public static void initGyro(Double temp) {
 		
-		boolean useTemp = !(temp == null);
+		boolean useTemp = (temp == null)''
 		
 		while(values.size() <= SAMPLE_SIZE) {
 			values.add(gyro.getVoltage());
