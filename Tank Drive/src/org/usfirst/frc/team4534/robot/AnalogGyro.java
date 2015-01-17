@@ -3,49 +3,56 @@ package org.usfirst.frc.team4534.robot;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team4534.robot.AnalogGyroThread;
 
 public class AnalogGyro {
-	private static AnalogInput gyro;
-	private static AnalogInput temp;
-	private static ArrayList<Double> values;
-	private static Double gyroBase = 2.5;
-	private static Double tempBase = 2.5;
-	private static Double degreesCelcius = 25.0;
-	private static Double angle;
-	private static boolean isTemp;
+	private AnalogInput gyro;
+	private AnalogInput temp;
+	private ArrayList<Double> values;
+	private Double gyroBase = 2.5;
+	private Double tempBase = 2.5;
+	private Double degreesCelcius = 25.0;
+	private Double angle;
+	private boolean isTemp;
 	
-	private static final int SAMPLE_SIZE = 100;
-	private static final int TEMP_SAMPLE_SIZE = 10;
+	int counter;
+	
+	private  final int SAMPLE_SIZE = 100;
+	private  final int TEMP_SAMPLE_SIZE = 10;
 	
 	public AnalogGyro(int channel) {
+		values = new ArrayList<Double>();
 		gyro = new AnalogInput(channel);
 		initGyro();
 	}
 	
 	public AnalogGyro(int channelGyro, int channelTemp) {
+		values = new ArrayList<Double>();
 		gyro = new AnalogInput(channelGyro);
 		temp = new AnalogInput(channelTemp);
 		isTemp = true;
-		initTemp();
+		//initTemp();
 		initGyro();
 	}
 	
 	public AnalogGyro(AnalogInput ai) {
+		values = new ArrayList<Double>();
 		gyro = ai;
 		initGyro();
 	}
 	
 	public AnalogGyro(AnalogInput ai1, AnalogInput ai2) {
+		values = new ArrayList<Double>();
 		gyro = ai1;
 		temp = ai2;
 		isTemp = true;
-		initTemp();
+		//initTemp();
 		initGyro();
 	}
 	
-	public static void initTemp() {
+	public  void initTemp() {
 		//calculate new temperature
 		while(values.size() <= TEMP_SAMPLE_SIZE) {
 			values.add(temp.getVoltage());
@@ -63,30 +70,35 @@ public class AnalogGyro {
 		degreesCelcius = (milliVolts / 9) - 252.7777778;
 	}
 	
-	public static Double getTemp() {
+	public  Double getTemp() {
 		return degreesCelcius;
 	}
 	
-	public static void setTemp(Double t) {
+	public  void setTemp(Double t) {
 		degreesCelcius = t;
 	}
 	
-	public static void initGyro() {
+	public  void initGyro() {
 		initGyro(null);
 	}
 	
-	public static void initGyro(Double temp) {
+	public  void initGyro(Double temp) {
 		
 		boolean useTemp = !(temp == null);
 		
-		while(values.size() <= SAMPLE_SIZE) {
-			values.add(gyro.getVoltage());
-		}
+		do {
+			try {
+				values.add(gyro.getVoltage());
+			} catch (NullPointerException e) {
+				
+			}
+		} while(values.size() <= SAMPLE_SIZE);
 		
 		Double avg = 0.0;
 		for(Double val : values) {
 			avg += val;
 		}
+		
 		avg = avg.doubleValue() / values.size(); //should be around 2.5V with the KOP gyro from recent years (2011-2014)
 		gyroBase = avg;
 		
@@ -94,21 +106,27 @@ public class AnalogGyro {
 	}
 	
 	
-	static Double getAngle() {
+	 Double getAngle() {
 		return angle;
 	}
 	
-	static void setAngle(Double a) {
+	 void setAngle(Double a) {
 		angle = a;
 	}
 	
-	private static class GyroLoop implements Runnable {
+	
+	public int getCount() {
+		return counter;
+	}
+	
+	private class GyroLoop implements Runnable {
 
 		@Override
 		public void run() {
 			try {
 				//run once per second
 				while(true) {
+					counter++;
 				Double alteredValue = gyro.getVoltage() - gyroBase;
 				
 				Double millivolts = alteredValue*1000;
@@ -131,6 +149,7 @@ public class AnalogGyro {
 				}
 			} catch (InterruptedException e) {
 				//TODO: Do something here.
+				SmartDashboard.putString("DB/String 9", e.getMessage());
 				return;
 			}
 		}

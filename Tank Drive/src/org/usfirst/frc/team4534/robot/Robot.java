@@ -33,11 +33,11 @@ public class Robot extends SampleRobot {
     Double rightAxis;
     AnalogInput analogInput;
     BuiltInAccelerometer accel;
+    Gyro gyro;
     //String mxpOutput;
     //String newMxpOutput;
     //Talon motorTalon;
-    Gyro gyro1;
-    AnalogInput analog5;
+    AnalogInput analogGyro,analogTemp;
     public Robot() {
         myRobot = new RobotDrive(0, 1);
         myRobot.setExpiration(0.1);
@@ -51,10 +51,8 @@ public class Robot extends SampleRobot {
 
         //mxpOutput = "";
         //newMxpOutput = "";
-
-        //gyro1 = new Gyro(0);
-        analog5 = new AnalogInput(5);
-
+        
+        gyro = new Gyro(0);
     }
 
         
@@ -66,7 +64,7 @@ public class Robot extends SampleRobot {
         double storedInputX = 0.0;
         double storedInputY = 0.0;
         while (isOperatorControl() && isEnabled()) {
-        	outputStringToDash(0, Double.toString(analog5.getVoltage()));
+        	//outputStringToDash(0, Double.toString(analog5.getVoltage()));
         	
         	double newX = controller.getRawAxis(1);
         	double newY = controller.getRawAxis(0)*-1;
@@ -88,7 +86,7 @@ public class Robot extends SampleRobot {
     
     public void test() {
     	while (isTest() && isEnabled()) {
-    		SmartDashboard.putString("DB/String 0", Double.toString(analog5.getAverageVoltage()));
+    		outputStringToDash(0,Double.toString(gyro.getAngle()));
     	}
     }
     
