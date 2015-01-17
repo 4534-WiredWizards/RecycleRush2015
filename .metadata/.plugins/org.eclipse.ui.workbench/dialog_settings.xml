@@ -6,7 +6,7 @@
 	</section>
 	<section name="org.eclipse.ui.internal.QuickAccess">
 		<item value="1238" key="dialogHeight"/>
-		<item value="1800" key="dialogWidth"/>
+		<item value="2400" key="dialogWidth"/>
 		<list key="textEntries">
 		</list>
 		<list key="orderedElements">
@@ -17,7 +17,7 @@
 		</list>
 	</section>
 	<section name="NewWizardAction">
-		<item value="edu.wpi.first.wpilib.plugins.java.wizards.newproject.NewJavaWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
+		<item value="edu.wpi.first.wpilib.plugins.java.wizards.examples.ExampleWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
 		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
 			<item value="edu.wpi.first.wpilib.plugins.java"/>
 		</list>
