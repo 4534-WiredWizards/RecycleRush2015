@@ -112,7 +112,7 @@ public class Robot extends SampleRobot {
     }
     
     public void test() {
-    	gyro.reset();
+    	gyro.initGyro();
     	
     	while (isTest() && isEnabled()) {
     		outputStringToDash(0,Double.toString(gyro.getAngle()));

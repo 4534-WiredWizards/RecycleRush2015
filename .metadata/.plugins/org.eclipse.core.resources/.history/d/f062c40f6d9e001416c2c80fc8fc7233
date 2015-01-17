@@ -91,29 +91,24 @@ public class Robot extends SampleRobot {
     	
     	double robotAngle = gyro.getAngle();
     	
-    	//scale the angle to 0-360 range
     	while(robotAngle <  0) {
     		robotAngle += 360;
-    	}    	
+    	}
+    	
     	while(robotAngle > 360) {
     		robotAngle -= 360;
     	}
     	
-    	
     	while(gyro.getAngle() < angle-liberty) {
-    		myRobot.drive(0.0, 1.0);
+    		
     	}
     	
     	while(gyro.getAngle() > angle+liberty){
-    		myRobot.drive(0.0, -1.0);
+    		
     	}
-    	
-    	myRobot.drive(0.0,0.0);
     }
     
     public void test() {
-    	gyro.reset();
-    	
     	while (isTest() && isEnabled()) {
     		outputStringToDash(0,Double.toString(gyro.getAngle()));
     	}
@@ -124,8 +119,6 @@ public class Robot extends SampleRobot {
     	//int iter = 0;
     	//double messageDuration = 1;
     	//double delay = 0.005;
-    	
-    	turnTo(90.0);
     	
         while (isAutonomous() && isEnabled()) {
         	//SmartDashboard.putString("DB/String 0", Double.toString(analog5.getAngle()));
