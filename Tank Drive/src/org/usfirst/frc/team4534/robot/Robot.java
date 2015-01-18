@@ -4,6 +4,7 @@ package org.usfirst.frc.team4534.robot;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -34,6 +35,7 @@ public class Robot extends SampleRobot {
     AnalogInput analogInput;
     BuiltInAccelerometer accel;
     Gyro gyro;
+    SerialPort serial;
     //String mxpOutput;
     //String newMxpOutput;
     //Talon motorTalon;
@@ -45,6 +47,7 @@ public class Robot extends SampleRobot {
         leftAxis = controller.getRawAxis(0);
         rightAxis = controller.getRawAxis(1);
         accel = new BuiltInAccelerometer();
+        serial = new SerialPort(115200, SerialPort.Port.kMXP);
         //analogInput = new AnalogInput(33);
         //motorTalon = new Talon(5);
         //motorTalon.set(100);
@@ -84,22 +87,20 @@ public class Robot extends SampleRobot {
         }
     }
     
-    private final double libertyStop = 2;
+    private final double libertyStop = 1;
     private final double libertySlow = 15;
     private final double libertyMedium = 30;
     
     public void turnTo(double angle) {
-    	if(isAutonomous() && isEnabled()){
+    	if(isEnabled()){
     		
     		myRobot.setSafetyEnabled(true);
-    		
-    		Double halfPoint = (angle-scaleAngle(gyro.getAngle()))/3;
     		
     		Double mediumSpeed = 0.70;
     		Double slowSpeed = 0.60;
     		Double fastSpeed = 0.80;
     		
-    		while((scaleAngle(gyro.getAngle()) < angle-libertyStop) && isAutonomous() && isEnabled()) {
+    		while((scaleAngle(gyro.getAngle()) < angle-libertyStop) && isEnabled()) {
     			Double speed = fastSpeed;
     			
     			if(scaleAngle(gyro.getAngle()) > angle-libertySlow) {
@@ -115,7 +116,7 @@ public class Robot extends SampleRobot {
     			outputStringToDash(0,Double.toString(scaleAngle(gyro.getAngle())));
     		}
     			
-    		while((scaleAngle(gyro.getAngle()) > angle+libertyStop) && isAutonomous() && isEnabled()){
+    		while((scaleAngle(gyro.getAngle()) > angle+libertyStop) && isEnabled()){
     			Double speed = fastSpeed;
     			
     			if(scaleAngle(gyro.getAngle()) < angle+libertySlow) {
@@ -135,6 +136,56 @@ public class Robot extends SampleRobot {
     	}
     }
     
+    public void turn(Double ang) {
+    	if(isEnabled()){
+    		
+    		gyro.reset();
+    		
+    		Double angle = gyro.getAngle()+ang;
+    		
+    		myRobot.setSafetyEnabled(true);
+    		
+    		Double mediumSpeed = 0.70;
+    		Double slowSpeed = 0.60;
+    		Double fastSpeed = 0.80;
+    		
+    		while((gyro.getAngle() < angle-libertyStop) && isEnabled()) {
+    			Double speed = fastSpeed;
+    			
+    			if(gyro.getAngle() > angle-libertySlow) {
+    				speed = slowSpeed;
+    			} else if(gyro.getAngle() > angle-libertyMedium) {
+    				speed = mediumSpeed;
+    			}
+    			
+    			
+    			myRobot.tankDrive(speed, -speed);
+    			
+    			//turnSpeed = turnSpeed*0.75;
+    			outputStringToDash(0,Double.toString(gyro.getAngle()));
+    		}
+    			
+    		while((gyro.getAngle() > angle+libertyStop) && isEnabled()){
+    			Double speed = fastSpeed;
+    			
+    			if(gyro.getAngle() < angle+libertySlow) {
+    				speed = slowSpeed;
+    			} else if(gyro.getAngle() < angle+libertyMedium) {
+    				speed = mediumSpeed;
+    			}
+    			
+    			
+    			myRobot.tankDrive(-speed, speed);
+    			
+    			//turnSpeed = turnSpeed*0.75;
+    			outputStringToDash(0,Double.toString(gyro.getAngle()));
+    		}
+    		
+    	}
+    		
+    	myRobot.drive(0.0,0.0);
+    }
+    
     private Double scaleAngle(Double ang){
     	//ang++;
     	while(ang <  0) {
@@ -148,10 +199,13 @@ public class Robot extends SampleRobot {
     }
     
     public void test() {
-    	gyro.reset();
-    	
     	while (isTest() && isEnabled()) {
-    		outputStringToDash(0,Double.toString(gyro.getAngle()));
+    		String str = serial.readString();
+    		if(!str.isEmpty()) {
+    			outputStringToDash(1,str);
+    		} else {
+    			outputStringToDash(2,Double.toString(Math.random()));
+    		}
     	}
     }
     
@@ -165,8 +219,14 @@ public class Robot extends SampleRobot {
     	
         while (isAutonomous() && isEnabled()) {
         	//outputStringToDash(0,Double.toString(gyro.getAngle()));
-        	Double ang = SmartDashboard.getNumber("DB/Slider 0");
-        	turnTo(ang);
+        	Double ang = Double.parseDouble(SmartDashboard.getString("DB/String 9"));
+        	if(ang != 0.0) {
+        		turn(ang);
+        		SmartDashboard.putString("DB/String 9", "0.0");
+        	} else {
+        		//TODO:Nothing
+        	}
+        	
         	//SmartDashboard.putString("DB/String 0", Double.toString(analog5.getAngle()));
         	/*
         	newMxpOutput = Integer.toString(analogInput.getValue());
