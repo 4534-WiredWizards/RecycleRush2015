@@ -2,7 +2,7 @@
 The 4534 Wired Wizards in-progress code for the FRC 2015 Competition
 
 
-Create A new example wpilib project. I'd recommend the "Tank Drive" example project
+Create A new example wpilib project or use an existing one. I'd recommend the "Tank Drive" example project
 
 Navigate to:
 src/org/usfirst/frc/team4534
