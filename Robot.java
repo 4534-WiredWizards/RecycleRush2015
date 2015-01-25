@@ -62,7 +62,7 @@ public class Robot extends SampleRobot {
         
         // These might need to be changed later. 
         // Currently "LM_0" is the top limit switch,
-        // and "LM_1" is the bottom limit switch
+        // and "LM_1" is the bottom limit switch.
         LM_0 = new DigitalInput(0);
         LM_1 = new DigitalInput(1);
         
@@ -90,18 +90,13 @@ public class Robot extends SampleRobot {
         	
         	double newX = controller.getRawAxis(1);
         	double newY = controller.getRawAxis(0)*-1;
-        	boolean isAcceleratingX = newX > storedInputX;
-        	boolean isAcceleratingY = newY > storedInputY;
         	
-        	//storedInputX = getAcceleration(storedInputX, newX);
-        	//storedInputY = getAcceleration(storedInputY, newY);
-        	if (storedInputX > .9) {
-        		storedInputX = 1;
-        	}
-        	if (storedInputY > .9) {
-        		storedInputY = 1;
-        	}
-        	myRobot.arcadeDrive(controller.getRawAxis(1), controller.getRawAxis(0)*-1);
+        	// Increment the stored inputs based on the joystick inputs
+        	storedInputX = accelerate(storedInputX, newX);
+        	storedInputY = accelerate(storedInputY, newY);
+        	
+        	// Uses the stored inputs instead of the joystick inputs (allows acceleration).
+        	myRobot.arcadeDrive(storedInputX, storedInputY);
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
@@ -272,23 +267,29 @@ public class Robot extends SampleRobot {
     public void outputStringToDash(int num, String str) {
     	SmartDashboard.putString("DB/String "+num, str);
     }
-    public double accelerate(int iteration) {
-        int a = 2;
-        double x = iteration / 400;
-        double powered = Math.pow(x, a);
-        return powered/(powered + Math.pow(1-x,a));
+    
+    public double accelerate(double currentValue, double targetValue) {
+    	double incrementValue = .2;
+    	
+    	// If the difference between the target value and the current value 
+    	// are less than the increment value, set the increment value to the difference.
+    	incrementValue = Math.min(incrementValue, Math.abs(targetValue - currentValue));
+    	
+    	// Depending on whether the target is greater than or less than the
+    	// current value, increment or decrement from the current value.
+        if (targetValue > currentValue) {
+        	currentValue += incrementValue;
+        } else if (targetValue < currentValue) {
+        	currentValue -= incrementValue;
+        }
+        
+        // Lower and upper limits for the value
+        currentValue = Math.min(1, currentValue);
+        currentValue = Math.max(-1, currentValue);
+        
+    	return currentValue;
     }
 
-    public double getIteration(double current, double last, int iteration) {
-    	if (current > last) {
-    		return iteration++;
-    	} else if (current < last) {
-    		return iteration--;
-    	} else {
-    		return iteration;
-    	}
-    }
-    
     public boolean touchingLiftLimitUp() {
     	return LM_0.get();
     }
