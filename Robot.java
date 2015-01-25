@@ -40,6 +40,12 @@ public class Robot extends SampleRobot {
     //String newMxpOutput;
     //Talon motorTalon;
     AnalogInput analogGyro,analogTemp;
+    
+    boolean liftMovingUp;
+    boolean liftMovingDown;
+    
+    
+    
     public Robot() {
         myRobot = new RobotDrive(0, 1);
         myRobot.setExpiration(0.1);
@@ -267,6 +273,48 @@ public class Robot extends SampleRobot {
     		return iteration--;
     	} else {
     		return iteration;
+    	}
+    }
+    
+    public boolean touchingLiftLimitUp() {
+    	return false;
+    }
+    
+    public boolean touchingLiftLimitDown() {
+    	return false;
+    }
+    
+    public boolean liftStopButtonPressed() {
+    	return false;
+    }
+    
+    public boolean isPressingLiftButtonUp() {
+    	return false;
+    }
+    
+    public boolean isPressingLiftButtonDown() {
+    	return false;
+    }
+    
+    public void onLiftUp() {
+    	if (!touchingLiftLimitUp() && !liftStopButtonPressed() &&
+    		(isPressingLiftButtonUp() || liftMovingUp)) {
+    		//set whatever motor to go up
+    		liftMovingUp = true;
+    	} else {
+    		//stop whatever motor
+    		liftMovingUp = false;
+    	}
+    }
+    
+    public void onLiftDown() {
+    	if (!touchingLiftLimitUp() && !liftStopButtonPressed() &&
+    		(isPressingLiftButtonDown() || liftMovingDown)) {
+    		//set whatever motor to go down
+    		liftMovingDown = true;
+    	} else {
+    		//stop whatever motor
+    		liftMovingDown = false;
     	}
     }
 }
