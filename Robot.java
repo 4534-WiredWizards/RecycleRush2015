@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 //import edu.wpi.first.wpilibj.Talon;
 
@@ -40,6 +41,9 @@ public class Robot extends SampleRobot {
     //String newMxpOutput;
     //Talon motorTalon;
     AnalogInput analogGyro,analogTemp;
+
+    DigitalInput LM_0;
+    DigitalInput LM_1;
     
     boolean liftMovingUp;
     boolean liftMovingDown;
@@ -54,6 +58,15 @@ public class Robot extends SampleRobot {
         rightAxis = controller.getRawAxis(1);
         accel = new BuiltInAccelerometer();
         serial = new SerialPort(115200, SerialPort.Port.kMXP);
+
+        
+        // These might need to be changed later. 
+        // Currently "LM_0" is the top limit switch,
+        // and "LM_1" is the bottom limit switch
+        LM_0 = new DigitalInput(0);
+        LM_1 = new DigitalInput(1);
+        
+        
         //analogInput = new AnalogInput(33);
         //motorTalon = new Talon(5);
         //motorTalon.set(100);
@@ -277,11 +290,11 @@ public class Robot extends SampleRobot {
     }
     
     public boolean touchingLiftLimitUp() {
-    	return false;
+    	return LM_0.get();
     }
     
     public boolean touchingLiftLimitDown() {
-    	return false;
+    	return LM_1.get();
     }
     
     public boolean liftStopButtonPressed() {
