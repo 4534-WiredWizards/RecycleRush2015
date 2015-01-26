@@ -98,6 +98,16 @@ public class Robot extends SampleRobot {
         	// Uses the stored inputs instead of the joystick inputs (allows acceleration).
         	myRobot.arcadeDrive(storedInputX, storedInputY);
             Timer.delay(0.005);		// wait for a motor update time
+            
+            // Test rumble, for later use to give feedback for collisions using accelerometer
+            if (newX != 0.0) {
+            	controller.setRumble(Joystick.RumbleType.kLeftRumble, 1);
+            }
+            if (newY != 0.0) {
+            	controller.setRumble(Joystick.RumbleType.kRightRumble, 1);
+            }
+            outputStringToDash(3, Double.toString(accel.getX()));
+            outputStringToDash(4, Double.toString(accel.getY()));
         }
     }
     
