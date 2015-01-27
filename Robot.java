@@ -332,7 +332,7 @@ public class Robot extends SampleRobot {
     }
     
     public void onLiftDown() {
-    	if (!touchingLiftLimitUp() && !liftStopButtonPressed() &&
+    	if (!touchingLiftLimitDown() && !liftStopButtonPressed() &&
     		(isPressingLiftButtonDown() || liftMovingDown)) {
     		//set whatever motor to go down
     		liftMovingDown = true;
