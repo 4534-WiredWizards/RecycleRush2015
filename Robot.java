@@ -235,47 +235,25 @@ public class Robot extends SampleRobot {
     
     public void autonomous() {
     	myRobot.setSafetyEnabled(true);
-    	//int iter = 0;
-    	//double messageDuration = 1;
-    	//double delay = 0.005;
-    	
-    	//turnTo(180.0);
     	
         while (isAutonomous() && isEnabled()) {
         	//outputStringToDash(0,Double.toString(gyro.getAngle()));
-        	Double ang = Double.parseDouble(SmartDashboard.getString("DB/String 9"));
+        	Double ang = Double.parseDouble(getStringFromDash(9));
         	if(ang != 0.0) {
         		turn(ang);
-        		SmartDashboard.putString("DB/String 9", "0.0");
+        		outputStringToDash(9, Double.toString(ang));
         	} else {
         		//TODO:Nothing
         	}
-        	
-        	//SmartDashboard.putString("DB/String 0", Double.toString(analog5.getAngle()));
-        	/*
-        	newMxpOutput = Integer.toString(analogInput.getValue());
-            if (mxpOutput != newMxpOutput) {
-            	mxpOutput = newMxpOutput;
-            	iter = 0;
-            }
-            
-            if (iter > Math.round(messageDuration/delay)) {
-            	iter = 0;
-            	mxpOutput = "";
-            	newMxpOutput = "";
-            }
-            if (mxpOutput != "") {
-            	SmartDashboard.putString("DB/String 0", mxpOutput);
-            	iter++;
-            } else  {
-            	SmartDashboard.putString("DB/String 0", "");
-            }
-            Timer.delay(delay);
-            */
         }
     }
+    
     public void outputStringToDash(int num, String str) {
     	SmartDashboard.putString("DB/String "+num, str);
+    }
+    
+    public String getStringFromDash(int num) {
+    	return SmartDashboard.getString("DB/String "+num);
     }
     
     public double accelerate(double currentValue, double targetValue) {
