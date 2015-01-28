@@ -125,7 +125,7 @@ public class Robot extends SampleRobot {
     private final double libertyMedium = 30;
     
     public void turnTo(double angle) {
-    	if(isEnabled()){
+    	if (isEnabled()) {
     		
     		myRobot.setSafetyEnabled(true);
     		
@@ -133,12 +133,12 @@ public class Robot extends SampleRobot {
     		Double slowSpeed = 0.60;
     		Double fastSpeed = 0.80;
     		
-    		while((scaleAngle(gyro.getAngle()) < angle-libertyStop) && isEnabled()) {
+    		while ((scaleAngle(gyro.getAngle()) < angle-libertyStop) && isEnabled()) {
     			Double speed = fastSpeed;
     			
-    			if(scaleAngle(gyro.getAngle()) > angle-libertySlow) {
+    			if (scaleAngle(gyro.getAngle()) > angle-libertySlow) {
     				speed = slowSpeed;
-    			} else if(scaleAngle(gyro.getAngle()) > angle-libertyMedium) {
+    			} else if (scaleAngle(gyro.getAngle()) > angle-libertyMedium) {
     				speed = mediumSpeed;
     			}
     			
@@ -149,12 +149,12 @@ public class Robot extends SampleRobot {
     			outputStringToDash(0,Double.toString(scaleAngle(gyro.getAngle())));
     		}
     			
-    		while((scaleAngle(gyro.getAngle()) > angle+libertyStop) && isEnabled()){
+    		while ((scaleAngle(gyro.getAngle()) > angle+libertyStop) && isEnabled()) {
     			Double speed = fastSpeed;
     			
-    			if(scaleAngle(gyro.getAngle()) < angle+libertySlow) {
+    			if (scaleAngle(gyro.getAngle()) < angle+libertySlow) {
     				speed = slowSpeed;
-    			} else if(scaleAngle(gyro.getAngle()) < angle+libertyMedium) {
+    			} else if (scaleAngle(gyro.getAngle()) < angle+libertyMedium) {
     				speed = mediumSpeed;
     			}
     			
@@ -170,7 +170,7 @@ public class Robot extends SampleRobot {
     }
     
     public void turn(Double ang) {
-    	if(isEnabled()){
+    	if (isEnabled()) {
     		
     		gyro.reset();
     		
@@ -182,12 +182,12 @@ public class Robot extends SampleRobot {
     		Double slowSpeed = 0.60;
     		Double fastSpeed = 0.80;
     		
-    		while((gyro.getAngle() < angle-libertyStop) && isEnabled()) {
+    		while ((gyro.getAngle() < angle-libertyStop) && isEnabled()) {
     			Double speed = fastSpeed;
     			
-    			if(gyro.getAngle() > angle-libertySlow) {
+    			if (gyro.getAngle() > angle-libertySlow) {
     				speed = slowSpeed;
-    			} else if(gyro.getAngle() > angle-libertyMedium) {
+    			} else if (gyro.getAngle() > angle-libertyMedium) {
     				speed = mediumSpeed;
     			}
     			
@@ -198,12 +198,12 @@ public class Robot extends SampleRobot {
     			outputStringToDash(0,Double.toString(gyro.getAngle()));
     		}
     			
-    		while((gyro.getAngle() > angle+libertyStop) && isEnabled()){
+    		while ((gyro.getAngle() > angle+libertyStop) && isEnabled()) {
     			Double speed = fastSpeed;
     			
-    			if(gyro.getAngle() < angle+libertySlow) {
+    			if (gyro.getAngle() < angle+libertySlow) {
     				speed = slowSpeed;
-    			} else if(gyro.getAngle() < angle+libertyMedium) {
+    			} else if (gyro.getAngle() < angle+libertyMedium) {
     				speed = mediumSpeed;
     			}
     			
@@ -219,12 +219,12 @@ public class Robot extends SampleRobot {
     	myRobot.drive(0.0,0.0);
     }
     
-    private Double scaleAngle(Double ang){
+    private Double scaleAngle(Double ang) {
     	//ang++;
-    	while(ang <  0) {
+    	while (ang <  0) {
     		ang += 360;
     	}    	
-    	while(ang > 360) {
+    	while (ang > 360) {
     		ang -= 360;
     	}
     	
@@ -234,7 +234,7 @@ public class Robot extends SampleRobot {
     public void test() {
     	while (isTest() && isEnabled()) {
     		String str = serial.readString();
-    		if(!str.isEmpty()) {
+    		if (!str.isEmpty()) {
     			outputStringToDash(1,str);
     		} else {
     			outputStringToDash(2,Double.toString(Math.random()));
@@ -248,7 +248,7 @@ public class Robot extends SampleRobot {
         while (isAutonomous() && isEnabled()) {
         	//outputStringToDash(0,Double.toString(gyro.getAngle()));
         	Double ang = Double.parseDouble(getStringFromDash(9));
-        	if(ang != 0.0) {
+        	if (ang != 0.0) {
         		turn(ang);
         		outputStringToDash(9, Double.toString(ang));
         	} else {
