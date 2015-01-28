@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4534.robot;
 
 
+import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
@@ -37,16 +38,14 @@ public class Robot extends SampleRobot {
     BuiltInAccelerometer accel;
     Gyro gyro;
     SerialPort serial;
+    Lift lift;
     //String mxpOutput;
     //String newMxpOutput;
     //Talon motorTalon;
     AnalogInput analogGyro,analogTemp;
 
-    DigitalInput LM_0;
-    DigitalInput LM_1;
-    
-    boolean liftMovingUp;
-    boolean liftMovingDown;
+    DigitalInput LM_TOP;
+    DigitalInput LM_BOTTOM;
     
     
     
@@ -58,13 +57,20 @@ public class Robot extends SampleRobot {
         rightAxis = controller.getRawAxis(1);
         accel = new BuiltInAccelerometer();
         serial = new SerialPort(115200, SerialPort.Port.kMXP);
+        
+        final Integer liftMotorPort = 2;
+        final Integer liftUpButtonNumber = 4;
+        final Integer liftDownButtonNumber = 1;
+        final Integer liftEmergencyStopButtonNumber = 2;
+        
 
         
         // These might need to be changed later. 
-        // Currently "LM_0" is the top limit switch,
-        // and "LM_1" is the bottom limit switch.
-        LM_0 = new DigitalInput(0);
-        LM_1 = new DigitalInput(1);
+        LM_TOP = new DigitalInput(0);
+        LM_BOTTOM = new DigitalInput(1);
+        
+        //initialize the lift
+        lift = new Lift(new Jaguar(liftMotorPort),LM_TOP,LM_BOTTOM,controller,liftUpButtonNumber, liftDownButtonNumber, liftEmergencyStopButtonNumber);
         
         
         //analogInput = new AnalogInput(33);
@@ -87,6 +93,9 @@ public class Robot extends SampleRobot {
         double storedInputY = 0.0;
         while (isOperatorControl() && isEnabled()) {
         	//outputStringToDash(0, Double.toString(analog5.getVoltage()));
+        	
+        	//first, poll the lift
+        	lift.poll();
         	
         	double newX = controller.getRawAxis(1);
         	double newY = controller.getRawAxis(0)*-1;
@@ -278,45 +287,5 @@ public class Robot extends SampleRobot {
     	return currentValue;
     }
 
-    public boolean touchingLiftLimitUp() {
-    	return LM_0.get();
-    }
     
-    public boolean touchingLiftLimitDown() {
-    	return LM_1.get();
-    }
-    
-    public boolean liftStopButtonPressed() {
-    	return false;
-    }
-    
-    public boolean isPressingLiftButtonUp() {
-    	return false;
-    }
-    
-    public boolean isPressingLiftButtonDown() {
-    	return false;
-    }
-    
-    public void onLiftUp() {
-    	if (!touchingLiftLimitUp() && !liftStopButtonPressed() &&
-    		(isPressingLiftButtonUp() || liftMovingUp)) {
-    		//set whatever motor to go up
-    		liftMovingUp = true;
-    	} else {
-    		//stop whatever motor
-    		liftMovingUp = false;
-    	}
-    }
-    
-    public void onLiftDown() {
-    	if (!touchingLiftLimitDown() && !liftStopButtonPressed() &&
-    		(isPressingLiftButtonDown() || liftMovingDown)) {
-    		//set whatever motor to go down
-    		liftMovingDown = true;
-    	} else {
-    		//stop whatever motor
-    		liftMovingDown = false;
-    	}
-    }
 }
