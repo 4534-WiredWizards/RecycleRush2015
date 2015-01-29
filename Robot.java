@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends SampleRobot {
+	
     RobotDrive myRobot;  // class that handles basic drive operations
     AccelerativeJoystick controller;
     Double leftAxis;
@@ -33,8 +34,8 @@ public class Robot extends SampleRobot {
         myRobot = new RobotDrive(0, 1);
         myRobot.setExpiration(0.1);
         controller = new AccelerativeJoystick(0);
-        leftAxis = controller.getRawAxis(0);
-        rightAxis = controller.getRawAxis(1);
+        leftAxis = controller.getRawAxis(1);
+        rightAxis = controller.getRawAxis(0);
         accel = new BuiltInAccelerometer();
         serial = new SerialPort(115200, SerialPort.Port.kMXP);
         
@@ -60,6 +61,7 @@ public class Robot extends SampleRobot {
      * Runs the motors with arcade steering.
      */
     public void operatorControl() {
+    	
         myRobot.setSafetyEnabled(true);
 
         while (isOperatorControl() && isEnabled()) {
@@ -67,8 +69,8 @@ public class Robot extends SampleRobot {
         	//first, poll the lift
         	lift.poll();
         	
-        	double axisX = controller.getAcceleratedAxis(0);
-        	double axisY = controller.getAcceleratedAxis(1)*-1;
+        	double axisX = controller.getAcceleratedAxis(1);
+        	double axisY = controller.getAcceleratedAxis(0)*-1;
         	
         	
         	// Uses the stored inputs instead of the joystick inputs (allows acceleration).
