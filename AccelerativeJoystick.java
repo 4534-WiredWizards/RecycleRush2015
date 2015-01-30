@@ -63,4 +63,9 @@ public class AccelerativeJoystick extends Joystick {
 			super.setRumble(RumbleType.kRightRumble, 0);
 		}
 	}
+	
+	public void rumble(double val) {
+		super.setRumble(RumbleType.kLeftRumble, (float) val);
+		super.setRumble(RumbleType.kRightRumble, (float) val);
+	}
 }

@@ -2,7 +2,6 @@ package org.usfirst.frc.team4534.robot;
 
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Jaguar;
@@ -19,7 +18,7 @@ public class Robot extends SampleRobot {
     Double leftAxis;
     Double rightAxis;
     AnalogInput analogInput;
-    BuiltInAccelerometer accel;
+    AveragedBuiltInAccelerometer accel;
     Gyro gyro;
     SerialPort serial;
     Lift lift;
@@ -36,7 +35,7 @@ public class Robot extends SampleRobot {
         controller = new AccelerativeJoystick(0);
         leftAxis = controller.getRawAxis(1);
         rightAxis = controller.getRawAxis(0);
-        accel = new BuiltInAccelerometer();
+        accel = new AveragedBuiltInAccelerometer();
         serial = new SerialPort(115200, SerialPort.Port.kMXP);
         
         final Integer liftMotorPort = 2;
@@ -77,20 +76,10 @@ public class Robot extends SampleRobot {
         	myRobot.arcadeDrive(axisX, axisY);
             Timer.delay(0.005);		// wait for a motor update time
             
-            //reports averaged accelerometer 
-            double accelx1 = (100 * accel.getX());
-            double accelx2 = (100 * accel.getX());
-            double accelx3 = (100 * accel.getX());
-            double accelx4 = (100 * accel.getX());
-            double accelx5 = (100 * accel.getX());
-            double accely1 = (100 * accel.getY());
-            double accely2 = (100 * accel.getY());
-            double accely3 = (100 * accel.getY());
-            double accely4 = (100 * accel.getY());
-            double accely5 = (100 * accel.getY());
             
-            double accelxAvg = Math.floor(((accelx1 + accelx2 + accelx3 + accelx4 + accelx5) / 5));
-            double accelyAvg = Math.floor(((accely1 + accely2 + accely3 + accely4 + accely5) / 5));
+            
+            double accelxAvg = accel.getAverageX();
+            double accelyAvg = accel.getAverageY();
             
             if ((accelyAvg > 80) || (accelxAvg > 80)) {
             	controller.rumble(true);
