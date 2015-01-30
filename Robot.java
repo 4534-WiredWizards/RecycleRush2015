@@ -77,10 +77,32 @@ public class Robot extends SampleRobot {
         	myRobot.arcadeDrive(axisX, axisY);
             Timer.delay(0.005);		// wait for a motor update time
             
-            // Test rumble, for later use to give feedback for collisions using accelerometer
+            //reports averaged accelerometer 
+            double accelx1 = (100 * accel.getX());
+            double accelx2 = (100 * accel.getX());
+            double accelx3 = (100 * accel.getX());
+            double accelx4 = (100 * accel.getX());
+            double accelx5 = (100 * accel.getX());
+            double accely1 = (100 * accel.getY());
+            double accely2 = (100 * accel.getY());
+            double accely3 = (100 * accel.getY());
+            double accely4 = (100 * accel.getY());
+            double accely5 = (100 * accel.getY());
             
-            outputStringToDash(3, Double.toString(accel.getX()));
-            outputStringToDash(4, Double.toString(accel.getY()));
+            double accelxAvg = Math.floor(((accelx1 + accelx2 + accelx3 + accelx4 + accelx5) / 5));
+            double accelyAvg = Math.floor(((accely1 + accely2 + accely3 + accely4 + accely5) / 5));
+            
+            if ((accelyAvg > 80) || (accelxAvg > 80)) {
+            	controller.rumble(true);
+//            	Timer.delay(.25);
+//				this delays ((ALL)) robot code by .25 seconds to rumble controller for .25 seconds, improvement for how rumble is managed is likely important
+            }
+            else {
+            	controller.rumble(false);
+            }
+            
+            outputStringToDash(3, Double.toString(accelxAvg));
+            outputStringToDash(4, Double.toString(accelyAvg));
         }
     }
     

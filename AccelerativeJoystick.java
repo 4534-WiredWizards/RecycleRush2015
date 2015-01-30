@@ -2,7 +2,7 @@ package org.usfirst.frc.team4534.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-public class AccelerativeJoystick extends Joystick{
+public class AccelerativeJoystick extends Joystick {
 	
 	private Double[] storedInputArray;
 	
