@@ -2,7 +2,7 @@ package org.usfirst.frc.team4534.robot;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 
-public class AveragedBuiltInAccelerometer extends BuiltInAccelerometer{
+public class AveragedBuiltInAccelerometer extends BuiltInAccelerometer {
 	public AveragedBuiltInAccelerometer() {
 		super();
 	}
