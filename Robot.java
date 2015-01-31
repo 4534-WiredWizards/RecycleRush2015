@@ -42,7 +42,7 @@ public class Robot extends SampleRobot {
         final Integer liftUpButtonNumber = 4;
         final Integer liftDownButtonNumber = 1;
         final Integer liftEmergencyStopButtonNumber = 2;
-        
+
 
         
         // These might need to be changed later. 
@@ -77,17 +77,18 @@ public class Robot extends SampleRobot {
             Timer.delay(0.005);		// wait for a motor update time
             
             
-            
             double accelxAvg = accel.getAverageX();
             double accelyAvg = accel.getAverageY();
             
             if ((accelyAvg > 80) || (accelxAvg > 80)) {
-            	// if collided with something, or moved a little Too quickly, vibrate the controller with maximum allowed force
+            	// if collided with something, or moved a little Too quickly,
+            	controller.rumblecount = 10;
             	// TODO: incorporate other rumble check:  if joystick up and no forward movement, vibrate lightly; etc
-            	controller.rumble(1);
-            	controller.rumble(1);
-            	controller.rumble(1);
             }
+            if (controller.rumblecount > 0) {
+            	controller.rumble(1);
+            	controller.rumblecount --;
+            } 
             else {
             	controller.rumble(0);
             }

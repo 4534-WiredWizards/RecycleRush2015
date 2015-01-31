@@ -3,7 +3,7 @@ package org.usfirst.frc.team4534.robot;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class AccelerativeJoystick extends Joystick {
-	
+	public double rumblecount;
 	private Double[] storedInputArray;
 	
 	public AccelerativeJoystick(int port) {
@@ -16,7 +16,7 @@ public class AccelerativeJoystick extends Joystick {
 		
 		storedInputArray = new Double[axisCount];
 		
-		for(int i=0;i<axisCount;i++) {
+		for (int i=0;i<axisCount;i++) {
 			storedInputArray[i] = 0.0;
 		}
 		
@@ -43,7 +43,8 @@ public class AccelerativeJoystick extends Joystick {
     	// current value, increment or decrement from the current value.
         if (targetValue > currentValue) {
         	currentValue += incrementValue;
-        } else if (targetValue < currentValue) {
+        } 
+        else if (targetValue < currentValue) {
         	currentValue -= incrementValue;
         }
         
@@ -58,7 +59,8 @@ public class AccelerativeJoystick extends Joystick {
 		if(on) {
 			super.setRumble(RumbleType.kLeftRumble, 1);
 			super.setRumble(RumbleType.kRightRumble, 1);
-		} else {
+		} 
+		else {
 			super.setRumble(RumbleType.kLeftRumble, 0);
 			super.setRumble(RumbleType.kRightRumble, 0);
 		}

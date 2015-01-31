@@ -12,7 +12,7 @@ public class AveragedBuiltInAccelerometer extends BuiltInAccelerometer {
 	public double getAverageX() {
 		double total = 0.0;
 		
-		for(int i = 0;i<SAMPLECOUNT;i++) {
+		for (int i = 0;i<SAMPLECOUNT;i++) {
 			total += super.getX();
 		}
 		
@@ -22,7 +22,7 @@ public class AveragedBuiltInAccelerometer extends BuiltInAccelerometer {
 	public double getAverageY() {
 		double total = 0.0;
 		
-		for(int i = 0;i<SAMPLECOUNT;i++) {
+		for (int i = 0;i<SAMPLECOUNT;i++) {
 			total += super.getY();
 		}
 		
@@ -32,7 +32,7 @@ public class AveragedBuiltInAccelerometer extends BuiltInAccelerometer {
 	public double getAverageZ() {
 		double total = 0.0;
 		
-		for(int i = 0;i<SAMPLECOUNT;i++) {
+		for (int i = 0;i<SAMPLECOUNT;i++) {
 			total += super.getZ();
 		}
 		
