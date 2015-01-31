@@ -20,7 +20,7 @@ public class Robot extends SampleRobot {
     AnalogInput analogInput;
     AveragedBuiltInAccelerometer accel;
     Gyro gyro;
-    SerialPort serial;
+    SerialPort serial = new SerialPort(115200, SerialPort.Port.kOnboard);;
     Lift lift;
     AnalogInput analogGyro,analogTemp;
 
@@ -36,7 +36,7 @@ public class Robot extends SampleRobot {
         leftAxis = controller.getRawAxis(1);
         rightAxis = controller.getRawAxis(0);
         accel = new AveragedBuiltInAccelerometer();
-        serial = new SerialPort(115200, SerialPort.Port.kMXP);
+        //serial 
         
         final Integer liftMotorPort = 2;
         final Integer liftUpButtonNumber = 4;
@@ -93,11 +93,11 @@ public class Robot extends SampleRobot {
             	controller.rumble(0);
             }
             
-            System.out.println("---test---");
-            
             outputStringToDash(3, Double.toString(accelxAvg));
             outputStringToDash(4, Double.toString(accelyAvg));
         }
+        
+        
     }
     
     //these values are used to have the robot correct itself in the turn method
@@ -154,6 +154,7 @@ public class Robot extends SampleRobot {
     	}
     		
     	myRobot.drive(0.0,0.0);
+    	myRobot.setSafetyEnabled(false);
     }
     
     public void test() {
@@ -170,19 +171,63 @@ public class Robot extends SampleRobot {
     	}
     }
     
+    private class AutoCommands {
+    	public static final String LEFT = "L";
+    	public static final String RIGHT = "R";
+    	public static final String PERFECT = "P";
+    	public static final String NONE = "N";
+    }
+    
     public void autonomous() {
     	myRobot.setSafetyEnabled(true);
     	
+    	//clear the serial buffer
+    	serial.readString();
+    	
         while (isAutonomous() && isEnabled()) {
-        	//outputStringToDash(0,Double.toString(gyro.getAngle()));
-        	Double ang = Double.parseDouble(getStringFromDash(9));
-        	if (ang != 0.0) {
-        		turn(ang);
-        		outputStringToDash(9, Double.toString(ang));
-        	} else {
-        		//TODO:Nothing
+        	String message = serial.readString();
+        	
+        	String firstCharacter = message.substring(0,1);
+        	
+        	switch(firstCharacter) {
+        		case AutoCommands.LEFT:
+        			System.out.println("LEFT");
+        			break;
+        		case AutoCommands.RIGHT:
+        			System.out.println("RIGHT");
+        			break;
+        		case AutoCommands.PERFECT:
+        			System.out.println("PERFECT");
+        			break;
+        		case AutoCommands.NONE:
+        			System.out.println("NONE");
+        			break;
+        	
+        	
         	}
+        	
         }
+        
+        myRobot.setSafetyEnabled(false);
+    }
+    
+    
+    
+    public static StringBuilder singleOccurence(String s)
+    {
+        StringBuilder sb = new StringBuilder();
+        if (s.length() > 0) {
+            char prev = s.charAt(0);
+            sb.append(prev);
+            for (int i = 1; i < s.length(); ++i) {
+                char cur = s.charAt(i);
+                if (cur != prev) {
+                    sb.append(cur);
+                    prev = cur;
+                }
+            }
+        }
+        return sb;
     }
     
     public void outputStringToDash(int num, String str) {
