@@ -77,8 +77,8 @@ public class Robot extends SampleRobot {
             Timer.delay(0.005);		// wait for a motor update time
             
             
-            double accelxAvg = accel.getAverageX();
-            double accelyAvg = accel.getAverageY();
+            double accelxAvg = (100 * accel.getAverageX());
+            double accelyAvg = (100 *accel.getAverageY());
             
             if ((accelyAvg > 80) || (accelxAvg > 80)) {
             	// if collided with something, or moved a little Too quickly,
@@ -92,6 +92,8 @@ public class Robot extends SampleRobot {
             else {
             	controller.rumble(0);
             }
+            
+            System.out.println("---test---");
             
             outputStringToDash(3, Double.toString(accelxAvg));
             outputStringToDash(4, Double.toString(accelyAvg));

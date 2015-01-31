@@ -16,7 +16,7 @@ public class AveragedBuiltInAccelerometer extends BuiltInAccelerometer {
 			total += super.getX();
 		}
 		
-		return Math.floor(total / SAMPLECOUNT);
+		return total / SAMPLECOUNT;
 	}
 	
 	public double getAverageY() {
@@ -26,7 +26,7 @@ public class AveragedBuiltInAccelerometer extends BuiltInAccelerometer {
 			total += super.getY();
 		}
 		
-		return Math.floor(total / SAMPLECOUNT);
+		return total / SAMPLECOUNT;
 	}
 	
 	public double getAverageZ() {
@@ -36,6 +36,6 @@ public class AveragedBuiltInAccelerometer extends BuiltInAccelerometer {
 			total += super.getZ();
 		}
 		
-		return Math.floor(total / SAMPLECOUNT);
+		return total / SAMPLECOUNT;
 	}
 }
