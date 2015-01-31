@@ -82,12 +82,14 @@ public class Robot extends SampleRobot {
             double accelyAvg = accel.getAverageY();
             
             if ((accelyAvg > 80) || (accelxAvg > 80)) {
-            	controller.rumble(true);
-//            	Timer.delay(.25);
-//				this delays ((ALL)) robot code by .25 seconds to rumble controller for .25 seconds, improvement for how rumble is managed is likely important
+            	// if collided with something, or moved a little Too quickly, vibrate the controller with maximum allowed force
+            	// TODO: incorporate other rumble check:  if joystick up and no forward movement, vibrate lightly; etc
+            	controller.rumble(1);
+            	controller.rumble(1);
+            	controller.rumble(1);
             }
             else {
-            	controller.rumble(false);
+            	controller.rumble(0);
             }
             
             outputStringToDash(3, Double.toString(accelxAvg));
