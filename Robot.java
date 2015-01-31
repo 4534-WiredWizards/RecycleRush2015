@@ -187,7 +187,13 @@ public class Robot extends SampleRobot {
         while (isAutonomous() && isEnabled()) {
         	String message = serial.readString();
         	
-        	String firstCharacter = message.substring(0,1);
+        	String firstCharacter = "0";
+        	
+        	try{
+        		firstCharacter = message.substring(0,1);
+        	} finally {
+        		
+        	}
         	
         	switch(firstCharacter) {
         		case AutoCommands.LEFT:
@@ -202,7 +208,8 @@ public class Robot extends SampleRobot {
         		case AutoCommands.NONE:
         			System.out.println("NONE");
         			break;
-        	
+        		default:
+        			break;
         	
         	}
         	
