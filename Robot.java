@@ -186,21 +186,24 @@ public class Robot extends SampleRobot {
     	
         while (isAutonomous() && isEnabled()) {
         	String message = serial.readString();
+        	//System.out.println(message);
         	
         	String firstCharacter = "0";
         	
         	try{
         		firstCharacter = message.substring(0,1);
-        	} finally {
+        	} catch(StringIndexOutOfBoundsException e) {
         		
         	}
         	
         	switch(firstCharacter) {
         		case AutoCommands.LEFT:
         			System.out.println("LEFT");
+        			turn(-5.0);
         			break;
         		case AutoCommands.RIGHT:
         			System.out.println("RIGHT");
+        			turn(5.0);
         			break;
         		case AutoCommands.PERFECT:
         			System.out.println("PERFECT");
@@ -213,6 +216,7 @@ public class Robot extends SampleRobot {
         	
         	}
         	
+        	Timer.delay(0.05);
         }
         
         myRobot.setSafetyEnabled(false);
