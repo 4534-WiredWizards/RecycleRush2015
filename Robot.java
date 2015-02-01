@@ -100,13 +100,30 @@ public class Robot extends SampleRobot {
         
     }
     
-    //these values are used to have the robot correct itself in the turn method
-    private final double libertyStop = 1;
-    private final double libertySlow = 15;
-    private final double libertyMedium = 30;
+
     
+    public void turn(Double ang, boolean scaledLiberties) {
+    	double libertyStop = 1;
+        double libertySlow = 15;
+        double libertyMedium = 30;
+    	if(scaledLiberties) {
+    		libertyStop = Math.ceil(ang/90);
+    		libertySlow = Math.ceil(ang/6);
+    		libertyMedium = Math.ceil(ang/3);
+    	}
+    	turn(ang, libertyStop, libertySlow, libertyMedium);
+    }
     
     public void turn(Double ang) {
+        //these values are used to have the robot correct itself in the turn method
+        final double libertyStop = 1;
+        final double libertySlow = 15;
+        final double libertyMedium = 30;
+    	turn(ang, libertyStop, libertySlow, libertyMedium);
+    }
+    
+    
+    public void turn(Double ang, double libertyStop, double libertySlow, double libertyMedium) {
     	if (isEnabled()) {
     		
     		gyro.reset();
@@ -171,13 +188,6 @@ public class Robot extends SampleRobot {
     	}
     }
     
-    private class AutoCommands {
-    	public static final String LEFT = "L";
-    	public static final String RIGHT = "R";
-    	public static final String PERFECT = "P";
-    	public static final String NONE = "N";
-    }
-    
     public void autonomous() {
     	myRobot.setSafetyEnabled(true);
     	
@@ -185,38 +195,45 @@ public class Robot extends SampleRobot {
     	serial.readString();
     	
         while (isAutonomous() && isEnabled()) {
-        	String message = serial.readString();
-        	//System.out.println(message);
         	
-        	String firstCharacter = "0";
+        	int reps = 5;
         	
-        	try{
-        		firstCharacter = message.substring(0,1);
-        	} catch(StringIndexOutOfBoundsException e) {
+        	double sum = 0.0;
+        	
+        	for(int i=0;i<reps;i++) {
+        		String message = serial.readString();
+        		double firstValue = 0.0;
+        		try{
+            		firstValue = Double.parseDouble(message.split(";")[0]);
+            	} catch(NumberFormatException e) {
+            		
+            	} catch(ArrayIndexOutOfBoundsException e) {
+            		
+            	}
+        		if(firstValue != 0.0) {
+        			sum += firstValue;
+        		} else {
+        			i--;
+        		}
+        	}
+        	
+        	double average = sum/reps;
+        	
+        	double turnValue = average/6;
+        	
+        	double turnLiberty = 5.0;
+        	
+        	if(turnValue > turnLiberty || turnValue < -turnLiberty) {
+        		turn(turnValue,false);
+        	} else {
         		
         	}
+        	//turn(turnValue);
         	
-        	switch(firstCharacter) {
-        		case AutoCommands.LEFT:
-        			System.out.println("LEFT");
-        			turn(-5.0);
-        			break;
-        		case AutoCommands.RIGHT:
-        			System.out.println("RIGHT");
-        			turn(5.0);
-        			break;
-        		case AutoCommands.PERFECT:
-        			System.out.println("PERFECT");
-        			break;
-        		case AutoCommands.NONE:
-        			System.out.println("NONE");
-        			break;
-        		default:
-        			break;
+        	myRobot.tankDrive(1.0, 1.0);
+        	Timer.delay(0.5);
+        	myRobot.tankDrive(0.0,0.0);
         	
-        	}
-        	
-        	Timer.delay(0.05);
         }
         
         myRobot.setSafetyEnabled(false);
