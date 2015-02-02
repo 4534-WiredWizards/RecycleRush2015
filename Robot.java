@@ -82,16 +82,11 @@ public class Robot extends SampleRobot {
             
             if ((accelyAvg > 80) || (accelxAvg > 80)) {
             	// if collided with something, or moved a little Too quickly,
-            	controller.rumblecount = 10;
+            	controller.heavyRumbleCount = 10;
             	// TODO: incorporate other rumble check:  if joystick up and no forward movement, vibrate lightly; etc
             }
-            if (controller.rumblecount > 0) {
-            	controller.rumble(1);
-            	controller.rumblecount --;
-            } 
-            else {
-            	controller.rumble(0);
-            }
+            
+            controller.accelRumble();
             
             outputStringToDash(3, Double.toString(accelxAvg));
             outputStringToDash(4, Double.toString(accelyAvg));
