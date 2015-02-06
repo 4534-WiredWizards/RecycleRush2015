@@ -198,9 +198,17 @@ public class Robot extends SampleRobot {
     	
     	double average = sum/reps;
     	
-    	double turnValue = average/5;
+    	double turnValue = average/1;
     	
     	return turnValue;
+    }
+    
+    public Double getTurnSpeed(Double visionTargetDis) {
+    	Double ret = Math.abs(visionTargetDis) / 320;
+    	ret += 0.4;
+    	if(ret > 1.0) ret = 1.0;
+    	if(ret < 0.0) ret = 0.0;
+    	return ret;
     }
     
     public void visionTurn() {
@@ -210,12 +218,15 @@ public class Robot extends SampleRobot {
     		
     		myRobot.setSafetyEnabled(true);
     		
-    		Double turningSpeed = 0.80;
+    		
     		
     		visionTargetDistance = getUpdatedVisionTargetDistance();
     		
+    		Double turningSpeed = getTurnSpeed(visionTargetDistance);
+    		
     		while ((visionTargetDistance < angle-visionTargetLiberty) && isEnabled()) {
     			visionTargetDistance = getUpdatedVisionTargetDistance();
+    			turningSpeed = getTurnSpeed(visionTargetDistance);
     			Double speed = turningSpeed;    			
     			
     			myRobot.tankDrive(speed, -speed);
@@ -226,6 +237,7 @@ public class Robot extends SampleRobot {
     			
     		while ((visionTargetDistance > angle+visionTargetLiberty) && isEnabled()) {
     			visionTargetDistance = getUpdatedVisionTargetDistance();
+    			turningSpeed = getTurnSpeed(visionTargetDistance);
     			Double speed = turningSpeed;    			
     			
     			myRobot.tankDrive(-speed, speed);
