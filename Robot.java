@@ -95,8 +95,6 @@ public class Robot extends SampleRobot {
         
     }
     
-
-    
     public void turn(Double ang, boolean scaledLiberties) {
     	double libertyStop = 1;
         double libertySlow = 15;
@@ -169,6 +167,79 @@ public class Robot extends SampleRobot {
     	myRobot.setSafetyEnabled(false);
     }
     
+    private static double visionTargetDistance;
+    private final static double visionTargetLiberty = 15.0;
+    
+    private Double getUpdatedVisionTargetDistance() {
+    	//clear buffer
+    	serial.readString();
+    	
+    	int reps = 1;
+    	
+    	double sum = 0.0;
+    	
+    	for(int i=0;i<reps;i++) {
+    		String message = serial.readString();
+    		System.out.println(message);
+    		double firstValue = 0.0;
+    		try{
+        		firstValue = Double.parseDouble(message.split(";")[0]);
+        	} catch(NumberFormatException e) {
+        		
+        	} catch(ArrayIndexOutOfBoundsException e) {
+        		
+        	}
+    		if(firstValue != 0.0) {
+    			sum += firstValue;
+    		} else {
+    			i--;
+    		}
+    	}
+    	
+    	double average = sum/reps;
+    	
+    	double turnValue = average/5;
+    	
+    	return turnValue;
+    }
+    
+    public void visionTurn() {
+    	if (isEnabled()) {
+    		
+    		Double angle = 0.0;
+    		
+    		myRobot.setSafetyEnabled(true);
+    		
+    		Double turningSpeed = 0.80;
+    		
+    		visionTargetDistance = getUpdatedVisionTargetDistance();
+    		
+    		while ((visionTargetDistance < angle-visionTargetLiberty) && isEnabled()) {
+    			visionTargetDistance = getUpdatedVisionTargetDistance();
+    			Double speed = turningSpeed;    			
+    			
+    			myRobot.tankDrive(speed, -speed);
+    			
+    			//turnSpeed = turnSpeed*0.75;
+    			//outputStringToDash(0,Double.toString(gyro.getAngle()));
+    		}
+    			
+    		while ((visionTargetDistance > angle+visionTargetLiberty) && isEnabled()) {
+    			visionTargetDistance = getUpdatedVisionTargetDistance();
+    			Double speed = turningSpeed;    			
+    			
+    			myRobot.tankDrive(-speed, speed);
+    			
+    			//turnSpeed = turnSpeed*0.75;
+    			outputStringToDash(0,Double.toString(gyro.getAngle()));
+    		}
+    		
+    	}
+    		
+    	myRobot.drive(0.0,0.0);
+    	myRobot.setSafetyEnabled(false);
+    }
+    
     public void test() {
     	boolean rumble = true;
     	while (isTest() && isEnabled()) {
@@ -186,48 +257,14 @@ public class Robot extends SampleRobot {
     public void autonomous() {
     	myRobot.setSafetyEnabled(true);
     	
-    	//clear the serial buffer
-    	serial.readString();
-    	
         while (isAutonomous() && isEnabled()) {
         	
-        	int reps = 5;
-        	
-        	double sum = 0.0;
-        	
-        	for(int i=0;i<reps;i++) {
-        		String message = serial.readString();
-        		double firstValue = 0.0;
-        		try{
-            		firstValue = Double.parseDouble(message.split(";")[0]);
-            	} catch(NumberFormatException e) {
-            		
-            	} catch(ArrayIndexOutOfBoundsException e) {
-            		
-            	}
-        		if(firstValue != 0.0) {
-        			sum += firstValue;
-        		} else {
-        			i--;
-        		}
-        	}
-        	
-        	double average = sum/reps;
-        	
-        	double turnValue = average/6;
-        	
-        	double turnLiberty = 5.0;
-        	
-        	if(turnValue > turnLiberty || turnValue < -turnLiberty) {
-        		turn(turnValue,false);
-        	} else {
-        		
-        	}
+        	visionTurn();
         	//turn(turnValue);
         	
-        	myRobot.tankDrive(1.0, 1.0);
-        	Timer.delay(0.5);
-        	myRobot.tankDrive(0.0,0.0);
+        	//myRobot.tankDrive(1.0, 1.0);
+        	//Timer.delay(0.5);
+        	//myRobot.tankDrive(0.0,0.0);
         	
         }
         
