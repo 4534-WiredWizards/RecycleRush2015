@@ -184,7 +184,8 @@ public class Robot extends SampleRobot {
     		System.out.println(message);
     		double firstValue = 0.0;
     		try{
-        		firstValue = Double.parseDouble(message.split(";")[0]);
+    			String[] arr = message.split(";");
+    			firstValue = Double.parseDouble(arr[arr.length-1]);
         	} catch(NumberFormatException e) {
         		
         	} catch(ArrayIndexOutOfBoundsException e) {
