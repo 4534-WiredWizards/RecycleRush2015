@@ -18,14 +18,23 @@ public class AccelerativeJoystick extends Joystick {
 		
 		for (int i=0;i<axisCount;i++) {
 			storedInputArray[i] = 0.0;
+			System.out.println(Integer.toString(i));
 		}
 		
 	}
 	
 	public Double getAcceleratedAxis(int axis) {
 		double currentValue = super.getRawAxis(axis);
+		int mode = 0;
+		//System.out.println(storedInputArray[2]);
+		if (super.getRawAxis(2) != 0) {
+			mode = 2;
+		}
+		if (super.getRawAxis(3) != 0) {
+			mode = 3;
+		}
 		
-		storedInputArray[axis] = accelerateValue(storedInputArray[axis],currentValue);
+		storedInputArray[axis] = accelerateValue(storedInputArray[axis],currentValue,mode);
 		
 		return storedInputArray[axis];
 	}
@@ -40,12 +49,26 @@ public class AccelerativeJoystick extends Joystick {
         }
 	}
 	
-	private Double accelerateValue(Double currentValue, Double targetValue) {
-		Double incrementValue = 0.2;
+	private Double accelerateValue(Double currentValue, Double targetValue, int mode) {
+		Double incrementValue = 0.1;
+		Double maxValue = 1.0;
+		if (mode == 2) {
+			// Precise mode
+			incrementValue = 0.05;
+			maxValue = 0.7;
+		} else if (mode == 3) {
+			// Fast mode
+			incrementValue = 0.5;
+			maxValue = 1.0;
+		}
+		System.out.println("mode "+Integer.toString(mode) + " inc: " + Double.toString(incrementValue) + " max: " + Double.toString(maxValue));
+
 		
 		// If the difference between the target value and the current value 
     	// are less than the increment value, set the increment value to the difference.
     	incrementValue = Math.min(incrementValue, Math.abs(targetValue - currentValue));
+    	
+    	
     	
     	// Depending on whether the target is greater than or less than the
     	// current value, increment or decrement from the current value.
@@ -57,8 +80,10 @@ public class AccelerativeJoystick extends Joystick {
         }
         
         // Lower and upper limits for the value
-        currentValue = Math.min(1, currentValue);
-        currentValue = Math.max(-1, currentValue);
+        currentValue = Math.min(maxValue, currentValue);
+        currentValue = Math.max(-maxValue, currentValue);
+        
+        //System.out.println(mode);
         
     	return currentValue;
 	}
