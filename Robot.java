@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.command.Command;
 
 public class Robot extends SampleRobot {
 	
@@ -26,6 +28,9 @@ public class Robot extends SampleRobot {
 
     DigitalInput LM_TOP;
     DigitalInput LM_BOTTOM;
+    
+    Command autonomousCommand;
+    SendableChooser chooser;
     
     
     
@@ -53,6 +58,16 @@ public class Robot extends SampleRobot {
         lift = new Lift(new Jaguar(liftMotorPort),LM_TOP,LM_BOTTOM,controller,liftUpButtonNumber, liftDownButtonNumber, liftEmergencyStopButtonNumber);
         
         gyro = new Gyro(0);
+        
+        chooser = new SendableChooser();
+        //chooser.addObject(name, object);
+        chooser.addDefault("defaultAuto", "1");
+        chooser.addObject("secondAuto", "2");
+        chooser.addObject("thirdAuto", "3");
+        SmartDashboard.putData("Chooser", chooser);
+
+        
+        
     }
 
         
@@ -252,9 +267,14 @@ public class Robot extends SampleRobot {
     	myRobot.setSafetyEnabled(false);
     }
     
-    public void test() {
+    public void test() {              
+    	
     	boolean rumble = true;
     	while (isTest() && isEnabled()) {
+            Object chosenValue = chooser.getSelected();
+            System.out.println(chosenValue);
+            
+            /*
     		if(rumble) {
     			rumble = false;
     		} else {
@@ -262,6 +282,8 @@ public class Robot extends SampleRobot {
     		}
     		
     		controller.rumble(rumble);
+    		*/
+            
     		Timer.delay(0.5);
     	}
     }
@@ -282,7 +304,6 @@ public class Robot extends SampleRobot {
         
         myRobot.setSafetyEnabled(false);
     }
-    
     
     
     public static StringBuilder singleOccurence(String s)
