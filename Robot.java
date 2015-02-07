@@ -20,7 +20,7 @@ public class Robot extends SampleRobot {
     AnalogInput analogInput;
     AveragedBuiltInAccelerometer accel;
     Gyro gyro;
-    SerialPort serial = new SerialPort(115200, SerialPort.Port.kOnboard);;
+    SerialPort serial;
     Lift lift;
     AnalogInput analogGyro,analogTemp;
 
@@ -30,7 +30,8 @@ public class Robot extends SampleRobot {
     
     
     public Robot() {
-        myRobot = new RobotDrive(0, 1);
+    	serial = new SerialPort(115200, SerialPort.Port.kOnboard);
+    	myRobot = new RobotDrive(0, 1);
         myRobot.setExpiration(0.1);
         controller = new AccelerativeJoystick(0);
         leftAxis = controller.getRawAxis(1);
@@ -168,7 +169,7 @@ public class Robot extends SampleRobot {
     }
     
     private static double visionTargetDistance;
-    private final static double visionTargetLiberty = 15.0;
+    private final static double visionTargetLiberty = 60.0;
     
     private Double getUpdatedVisionTargetDistance() {
     	//clear buffer
@@ -205,8 +206,8 @@ public class Robot extends SampleRobot {
     
     public Double getTurnSpeed(Double visionTargetDis) {
     	Double ret = Math.abs(visionTargetDis) / 320;
-    	ret += 0.4;
     	if(ret > 1.0) ret = 1.0;
+    	ret += 0.5;    	
     	if(ret < 0.0) ret = 0.0;
     	return ret;
     }
