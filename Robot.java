@@ -215,7 +215,7 @@ public class Robot extends SampleRobot {
     	
     	double average = sum/reps;
     	
-    	double turnValue = average/1;
+    	double turnValue = average/10;
     	
     	return turnValue;
     }
