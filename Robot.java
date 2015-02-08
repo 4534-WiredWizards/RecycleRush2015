@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +25,7 @@ public class Robot extends SampleRobot {
     Gyro gyro;
     SerialPort serial;
     Lift lift;
+    Jaguar liftMotor;
     AnalogInput analogGyro,analogTemp;
 
     DigitalInput LM_TOP;
@@ -31,6 +33,7 @@ public class Robot extends SampleRobot {
     
     Command autonomousCommand;
     SendableChooser chooser;
+    
     
     
     
@@ -44,27 +47,31 @@ public class Robot extends SampleRobot {
         accel = new AveragedBuiltInAccelerometer();
         //serial 
         
+        
+        
         final Integer liftMotorPort = 2;
         final Integer liftUpButtonNumber = 4;
         final Integer liftDownButtonNumber = 1;
         final Integer liftEmergencyStopButtonNumber = 2;
 
-
+        liftMotor = new Jaguar(liftMotorPort);
         
         // These might need to be changed later. 
         LM_TOP = new DigitalInput(0);
         LM_BOTTOM = new DigitalInput(1);
         
         //initialize the lift
-        lift = new Lift(new Jaguar(liftMotorPort),LM_TOP,LM_BOTTOM,controller,liftUpButtonNumber, liftDownButtonNumber, liftEmergencyStopButtonNumber);
+        lift = new Lift(liftMotor,LM_TOP,LM_BOTTOM,controller,liftUpButtonNumber, liftDownButtonNumber, liftEmergencyStopButtonNumber);
         
         gyro = new Gyro(0);
         
         chooser = new SendableChooser();
         //chooser.addObject(name, object);
-        chooser.addDefault("defaultAuto", "1");
-        chooser.addObject("secondAuto", "2");
-        chooser.addObject("thirdAuto", "3");
+        chooser.addDefault("Enter Auto Zone w/no Bump", "-1");
+        chooser.addDefault("Enter Auto Zone with Bump", "0");
+        chooser.addObject("1 Tote Auto", "1");
+        chooser.addObject("2 Tote Auto", "2");
+        chooser.addObject("3 Tote Auto", "3");
         SmartDashboard.putData("Chooser", chooser);
 
         
@@ -77,6 +84,8 @@ public class Robot extends SampleRobot {
      */
     public void operatorControl() {
     	
+    	controller.init();
+    	
         myRobot.setSafetyEnabled(true);
 
         while (isOperatorControl() && isEnabled()) {
@@ -84,7 +93,7 @@ public class Robot extends SampleRobot {
         	//first, poll the lift
         	lift.poll();
         	
-        	double axisX = controller.getAcceleratedAxis(1);
+        	double axisX = controller.getAcceleratedAxis(1)*-1;
         	double axisY = controller.getAcceleratedAxis(0)*-1;
         	
         	
@@ -92,9 +101,9 @@ public class Robot extends SampleRobot {
         	myRobot.arcadeDrive(axisX, axisY);
             Timer.delay(0.005);		// wait for a motor update time
             
-            
-            double accelxAvg = (100 * accel.getAverageX());
-            double accelyAvg = (100 *accel.getAverageY());
+            double accelxAvg = 100*accel.getAverageX();
+            double accelyAvg = 100*accel.getAverageY();
+            double accelzAvg = 100*accel.getAverageZ();
             
             if ((accelyAvg > 80) || (accelxAvg > 80)) {
             	// if collided with something, or moved a little Too quickly,
@@ -106,6 +115,7 @@ public class Robot extends SampleRobot {
             
             outputStringToDash(3, Double.toString(accelxAvg));
             outputStringToDash(4, Double.toString(accelyAvg));
+            outputStringToDash(5, Double.toString(accelzAvg));
         }
         
         
@@ -135,6 +145,10 @@ public class Robot extends SampleRobot {
     public void turn(Double ang, double libertyStop, double libertySlow, double libertyMedium) {
     	if (isEnabled()) {
     		
+    		
+    		
+    		
+    		
     		gyro.reset();
     		
     		Double angle = gyro.getAngle()+ang;
@@ -145,8 +159,12 @@ public class Robot extends SampleRobot {
     		Double slowSpeed = 0.60;
     		Double fastSpeed = 0.80;
     		
+    		while((gyro.getAngle() < angle-libertyStop) && (gyro.getAngle() > angle+libertyStop) && isEnabled()) {
+    		
     		while ((gyro.getAngle() < angle-libertyStop) && isEnabled()) {
     			Double speed = fastSpeed;
+    			
+    			SmartDashboard.putNumber("Gyro", gyro.getAngle());
     			
     			if (gyro.getAngle() > angle-libertySlow) {
     				speed = slowSpeed;
@@ -164,6 +182,8 @@ public class Robot extends SampleRobot {
     		while ((gyro.getAngle() > angle+libertyStop) && isEnabled()) {
     			Double speed = fastSpeed;
     			
+    			SmartDashboard.putNumber("Gyro", gyro.getAngle());
+    			
     			if (gyro.getAngle() < angle+libertySlow) {
     				speed = slowSpeed;
     			} else if (gyro.getAngle() < angle+libertyMedium) {
@@ -177,7 +197,11 @@ public class Robot extends SampleRobot {
     			outputStringToDash(0,Double.toString(gyro.getAngle()));
     		}
     		
+    		}
+    		
     	}
+    	
+    	SmartDashboard.putNumber("Gyro", gyro.getAngle());
     		
     	myRobot.drive(0.0,0.0);
     	myRobot.setSafetyEnabled(false);
@@ -271,31 +295,51 @@ public class Robot extends SampleRobot {
     
     public void test() {              
     	
-    	boolean rumble = true;
+    	//boolean rumble = true;
     	while (isTest() && isEnabled()) {
-            Object chosenValue = chooser.getSelected();
-            System.out.println(chosenValue);
-            
-            /*
-    		if(rumble) {
-    			rumble = false;
-    		} else {
-    			rumble = true;
-    		}
-    		
-    		controller.rumble(rumble);
-    		*/
-            
-    		Timer.delay(0.5);
+            liftMotor.set(controller.getAcceleratedAxis(1));
     	}
     }
     
     public void autonomous() {
-    	myRobot.setSafetyEnabled(true);
+    	myRobot.setSafetyEnabled(false);
     	
-        while (isAutonomous() && isEnabled()) {
+       if (isAutonomous() && isEnabled()) {
+        	Object chosenValue = chooser.getSelected();
         	
-        	visionTurn();
+        	int totes = 0;
+        	
+        	try {
+        		totes = Integer.parseInt(chosenValue.toString());
+        	} catch (Exception e){
+        		totes = 0;
+        	}
+        	
+        	switch(totes) {
+        		case -1:
+        		default:
+        			//drive into auto zone only
+        			driveIntoAutoZone();
+        			break;
+        		case 0:
+        			driveIntoAutoZone(-0.775,3.0);
+        		case 1:
+        			/*
+        			//lift crate
+        			lift.moveUp();
+        			//wait for stop
+        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+        				lift.poll();
+        			}
+        			*/
+        			//turn 180
+        			turn(180.0);
+        			//drive into auto zone
+        			//driveIntoAutoZone(0.75,3.0);
+        			
+        	}
+        	
+        	//visionTurn();
         	//turn(turnValue);
         	
         	//myRobot.tankDrive(1.0, 1.0);
@@ -303,8 +347,23 @@ public class Robot extends SampleRobot {
         	//myRobot.tankDrive(0.0,0.0);
         	
         }
+       
+        while(isAutonomous() && isEnabled()) {
+        	SmartDashboard.putNumber("Gyro", gyro.getAngle());
+        }
         
-        myRobot.setSafetyEnabled(false);
+        myRobot.setSafetyEnabled(true);
+    }
+    
+    private void driveIntoAutoZone() {
+    	driveIntoAutoZone(-0.75,3.0);
+    }
+    
+    private void driveIntoAutoZone(Double speed, Double time) {
+    	//this code drives into the auto zone
+    	myRobot.tankDrive(speed,speed);
+    	Timer.delay(time);
+    	myRobot.tankDrive(0.0, 0.0);
     }
     
     

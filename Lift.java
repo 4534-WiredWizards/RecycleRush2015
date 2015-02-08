@@ -10,7 +10,7 @@ public class Lift {
 	Joystick joystick;
 	int upButton,downButton,stopButton;
 	
-	private final Double LIFT_SPEED = 1.0;
+	private final Double LIFT_SPEED = 0.2;
 	
 	public enum LiftState {
 		MOVING_UP,
@@ -49,7 +49,7 @@ public class Lift {
 		return LM_BOTTOM.get();
 	}
 	
-	private void moveUp() {
+	public void moveUp() {
 		if (!touchingLimitUp()) {
 	    	liftMotor.set(LIFT_SPEED);
 	    	currentLiftState = LiftState.MOVING_UP;
@@ -59,7 +59,7 @@ public class Lift {
 	    }
 	}
 	
-	private void moveDown() {
+	public void moveDown() {
 		if (!touchingLimitDown()) {
 	    	liftMotor.set(-LIFT_SPEED);
 	    	currentLiftState = LiftState.MOVING_DOWN;

@@ -11,16 +11,20 @@ public class AccelerativeJoystick extends Joystick {
 		//cast to the superclass
 		super(port);
 		
+		init();
+		
+	}
+	
+	public void init() {
 		//count the axises and assume default values of zero for acceleration
 		int axisCount = super.getAxisCount();
-		
+				
 		storedInputArray = new Double[axisCount];
-		
+				
 		for (int i=0;i<axisCount;i++) {
 			storedInputArray[i] = 0.0;
-			System.out.println(Integer.toString(i));
+			//System.out.println(Integer.toString(i));
 		}
-		
 	}
 	
 	public Double getAcceleratedAxis(int axis) {
