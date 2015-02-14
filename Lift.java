@@ -10,7 +10,7 @@ public class Lift {
 	AccelerativeJoystick joystick;
 	int upButton,downButton,stopButton;
 	
-	private final Double LIFT_SPEED = 0.3;
+	private final Double LIFT_SPEED = 0.2;
 	private final Double LIFT_INCREMENT = 0.05;
 	
 	public enum LiftState {
@@ -73,6 +73,7 @@ public class Lift {
 	}
 	
 	public void move() {
+		
 		double moveVal = joystick.getAcceleratedUpDownButtons(0, upButton, downButton, LIFT_INCREMENT, LIFT_SPEED);
 		//if (!touchingLimitUp() && !touchingLimitDown()) {
 			liftMotor.set(moveVal);
@@ -88,15 +89,29 @@ public class Lift {
 	}
 	
 	public void poll() {
+		poll(false);
+	}
+	
+	public void poll(boolean autoMode) {
 		
 		
 		//This function needs to be called continuously to ensure the lift shuts off when it does
 		
 		//SAFETY FIRST, check if the e-stop button is pressed
-		if(joystick.getRawButton(stopButton)) {
+		/*if(joystick.getRawButton(stopButton)) {
 			emergencyStop();
 		} else {
-			move();
+			if (!autoMode) {
+				move();
+			}
+		}*/
+		
+		if(joystick.getRawButton(upButton)) {
+			moveUp();
+		} else if(joystick.getRawButton(downButton)) {
+			moveDown();
+		} else {
+			liftMotor.set(0.0);
 		}
 		
 		

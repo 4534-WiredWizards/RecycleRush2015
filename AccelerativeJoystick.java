@@ -33,11 +33,11 @@ public class AccelerativeJoystick extends Joystick {
 		double currentValue = super.getRawAxis(axis);
 		
 		double incrementValue = 0.1;
-		double maxValue = 1.0;
+		double maxValue = 0.6;
 
 		if (super.getRawAxis(2) != 0) {
 			incrementValue = 0.05;
-			maxValue = 0.7;
+			maxValue = 0.3;
 		}
 		if (super.getRawAxis(3) != 0) {
 			incrementValue = 0.5;
@@ -48,6 +48,8 @@ public class AccelerativeJoystick extends Joystick {
 		
 		return storedInputArray[axis];
 	}
+	
+	
 	
 	public Double getAcceleratedUpDownButtons(int key, int upButton, int downButton, double incrementValue, double maxValue) {
 		boolean currentValueUp = super.getRawButton(upButton);
@@ -67,6 +69,7 @@ public class AccelerativeJoystick extends Joystick {
 		return storedButtonArray[key];
 	}
 	
+	
 	public void accelRumble() {
         if (heavyRumbleCount > 0) {
         	rumble(1);
@@ -80,6 +83,10 @@ public class AccelerativeJoystick extends Joystick {
 	private Double accelerateValue(Double currentValue, Double targetValue, Double incrementValue, Double maxValue) {
 		// If the difference between the target value and the current value 
     	// are less than the increment value, set the increment value to the difference.
+		System.out.println("cur" + currentValue);
+		System.out.println("target" + targetValue);
+		System.out.println("inc" + incrementValue);
+		System.out.println("max" + maxValue);
     	incrementValue = Math.min(incrementValue, Math.abs(targetValue - currentValue));
     	
     	// Depending on whether the target is greater than or less than the

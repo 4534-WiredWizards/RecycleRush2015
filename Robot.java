@@ -47,16 +47,16 @@ public class Robot extends SampleRobot {
     	
     	tegraSerial = new SerialPort(115200, SerialPort.Port.kOnboard);
     	arduinoSerial = new SerialPort(115200, SerialPort.Port.kMXP);
-    	// myRobot = new RobotDrive(1, 2);
-        // myRobot.setExpiration(0.1);
+    	myRobot = new RobotDrive(1, 2);
+        myRobot.setExpiration(0.1);
         
         controller = new AccelerativeJoystick(0);
-        /*
+        
         leftAxis = controller.getRawAxis(1);
         rightAxis = controller.getRawAxis(0);
         accel = new AveragedBuiltInAccelerometer();
         //serial 
-        */
+        
         
         
         final Integer liftMotorPort = 0;
@@ -105,7 +105,7 @@ public class Robot extends SampleRobot {
         	//first, poll the lift
         	lift.poll();
         	
-        	/*
+        	
         	double axisX = controller.getAcceleratedAxis(1)*-1;
         	double axisY = controller.getAcceleratedAxis(0)*-1;
         	
@@ -129,7 +129,7 @@ public class Robot extends SampleRobot {
             outputStringToDash(3, Double.toString(accelxAvg));
             outputStringToDash(4, Double.toString(accelyAvg));
             outputStringToDash(5, Double.toString(accelzAvg));
-            */
+            
         }
         
         
@@ -264,7 +264,7 @@ public class Robot extends SampleRobot {
     	if(ret > 1.0) ret = 1.0;
     	ret += 0.5;    	
     	if(ret < 0.0) ret = 0.0;
-    	return ret;
+    	return ret/2;
     }
     
     public void visionTurn() {
@@ -317,10 +317,162 @@ public class Robot extends SampleRobot {
     	}
     }
     
+    public void lift() {
+    	Timer.delay(1.0);
+    	/*
+		//lift crate
+		lift.moveUp();
+		
+    	Should IR logic go here?
+    	
+		//wait for stop
+		while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+			lift.poll(true);
+		}
+		*/
+    }
+    
+    public void drop() {
+    	//Timer.delay(1.0);
+    	/*
+    	//drop crate
+    	lift.moveDown();
+    	//wait for stop
+    	
+    	Should IR logic go here?
+    	
+    	while(lift.getCurrentLiftState() != Lift.LiftState.DOWN && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+    	   lift.poll(true);
+    	}
+    	*/
+    }
+    
+    public void turnLeft() {
+    	//turn -90
+		turn(-90.0,true);
+		//delay part a sec
+		Timer.delay(0.1);
+		//correct turn
+		turn(-88.0-gyro.getAngle(),true);
+    }
+    
+    public void turnRight() {
+    	//turn 90
+		turn(90.0,true);
+		//delay part a sec
+		Timer.delay(0.1);
+		//correct turn
+		turn(88.0-gyro.getAngle(),true);
+    }
+    
+    public void turnAround() {
+    	//turn 180
+		turn(180.0,true);
+		//delay part a sec
+		Timer.delay(0.1);
+		//correct turn
+		turn(178.0-gyro.getAngle(),true);
+    }
+    
+    /*
+    
+    public void turnTo(double currentRot, double targetRot) {
+    	double difference = targetRot - currentRot;
+    	difference %= 360;
+    	
+    	turn(difference);
+    	turn(difference - 2 - gyro.getAngle(), true);
+    }
+    
+    public void moveX(int currentX, int targetX, double currentRot) {
+    	turn(0.0 - currentRot);
+    	turn(88.0-gyro.getAngle(),true);
+    }
+    
+    public void moveY(int currentY, int targetY) {
+    	double current = (double) currentY;
+    	double target = (double) targetY;
+        driveIntoAutoZone(0.775, target - current);
+    }
+    
+    public void goToPos(int currentX, int currentY, int targetX, int targetY) {
+    	if (currentX == targetX || currentY == targetY) {
+    		if (currentY == 1) {
+    			moveY(1, 0);
+    		}
+    		if (currentX != targetX) {
+    			
+    		}
+    	}
+    }
+    
+    */
+    
+    public boolean hasTrue(boolean[] values) {
+    	for(int i = 0; i < values.length; i++) {
+			if (values[i]) {
+				return true;
+			}
+		}
+    	return false;
+    }
+    
+    public int getClosestTrue(int currentVal, boolean[] values) {
+    	int key = -1;
+    	if (values[currentVal]) {
+    		return currentVal;
+    	}
+    	for(int i = 0; i < values.length; i++) {
+			if (key == -1) {
+				key = i;
+			} else {
+				if (values[i] && Math.abs(currentVal - key) > Math.abs(currentVal - i)) {
+					key = i;
+				}
+			}
+		}
+    	return key;
+    }
+    
     public void autonomous() {
     	myRobot.setSafetyEnabled(false);
     	
-       if (isAutonomous() && isEnabled()) {
+    	
+    	/*
+    	// These should be defined in the driver station
+    	int startingPos = 0;
+    	boolean[] get = new boolean[3];
+    	get[0] = true;
+    	get[1] = true;
+    	get[2] = true;
+    	
+    	int currentX = startingPos;
+    	int currentY = 1;
+    	*/
+    	
+    	
+    	if (isAutonomous() && isEnabled()) {
+    		
+    		/*
+    		while(!hasTrue(get)) {
+    			// There are still crates to get.
+    			
+    			int targetX = getClosestTrue(currentX, get);
+    			
+    			if (currentX == targetX) {
+    				// move to crate
+    				// pick up crate
+    				get[currentX] = false;
+    			} else {
+    				// go to target crate
+    				// goToPos(currentX, currentY, targetX, currentY);
+    			}
+    		}
+    		*/
+    		
+    		
+    		
+    		
         	Object chosenValue = chooser.getSelected();
         	
         	int totes = 0;
@@ -337,65 +489,89 @@ public class Robot extends SampleRobot {
         			//drive into auto zone only
         			driveIntoAutoZone();
         			break;
+        			
         		case 0:
         			driveIntoAutoZone(-0.775,3.0);
+        			
         		case 1:
-        			/*
-        			//lift crate
-        			lift.moveUp();
-        			//wait for stop
-        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
-        				lift.poll();
-        			}
-        			*/
-        			//turn 180
-        			turn(180.0,true);
-        			//delay part a sec
-        			Timer.delay(0.1);
-        			//correct turn
-        			turn(178.0-gyro.getAngle(),true);
+        			lift();
+        			
+        			
         			//drive into auto zone
-        			driveIntoAutoZone(0.75,3.0);
+        			//driveIntoAutoZone(0.75,3.0);
         			break;
+        			
         		case 2:
-        			/*
-        			//lift crate
-        			lift.moveUp();
-        			//wait for stop
-        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
-        				lift.poll();
-        			}
-        			*/
+        			lift();
+        			
         			//move back some
         			driveIntoAutoZone(-0.8,1.0);
-        			//turn 90
-        			turn(90.0,true);
-        			//delay part a sec
-        			Timer.delay(0.1);
-        			//correct turn
-        			turn(88.0-gyro.getAngle(),true);
+
+        			turnRight();
+
         			//drive one crate distance
         			driveOneCrateDistanceSideways();
-        			//turn -90
-        			turn(-90.0,true);
-        			//delay part a sec
-        			Timer.delay(0.1);
-        			//correct turn
-        			turn(-88.0-gyro.getAngle(),true);
+        			
+        			turnLeft();
+
         			//align to crate
         			visionTurn();
+        			
         			//drive forward
         			driveOneCrateDistanceForwards();
-        			/*
-        			//lift crate
-        			lift.moveUp();
-        			//wait for stop
-        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
-        				lift.poll();
-        			}
-        			*/
+        			
+        			drop();
+        			lift();
+        			
+        			
         			//drive into auto zone
-        			driveIntoAutoZone();
+        			//driveIntoAutoZone();
+        			break;
+        			
+        		case 3:
+        			lift();
+        			
+        			//move back some
+        			driveIntoAutoZone(-0.8,1.0);
+        			
+        			turnRight();
+        			
+        			//drive one crate distance
+        			driveOneCrateDistanceSideways();
+        			
+        			turnLeft();
+        			
+        			//align to crate
+        			visionTurn();
+        			
+        			//drive forward
+        			driveOneCrateDistanceForwards();
+        			
+        			drop();
+        			lift();
+        			
+        			//move back some
+        			driveIntoAutoZone(-0.8,1.0);
+        			
+        			turnRight();
+        			
+        			//drive one crate distance
+        			driveOneCrateDistanceSideways();
+        			
+        			turnLeft();
+        			
+        			//align to crate
+        			visionTurn();
+        			
+        			//drive forward
+        			driveOneCrateDistanceForwards();
+        			
+        			drop();
+        			lift();
+        			
+        			
+        			//drive into auto zone
+        			//driveIntoAutoZone();
         			break;
         			
         	}
@@ -406,6 +582,8 @@ public class Robot extends SampleRobot {
         	//myRobot.tankDrive(1.0, 1.0);
         	//Timer.delay(0.5);
         	//myRobot.tankDrive(0.0,0.0);
+        	
+        	//*/
         	
         }
        
@@ -443,6 +621,7 @@ public class Robot extends SampleRobot {
     
     private void driveIntoAutoZone(Double speed, Double time) {
     	//this code drives into the auto zone
+    	//speed *= 0.75;
     	myRobot.tankDrive(speed,speed);
     	Timer.delay(time);
     	myRobot.tankDrive(0.0, 0.0);
