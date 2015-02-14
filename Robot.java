@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Robot extends SampleRobot {
 	
@@ -23,7 +24,10 @@ public class Robot extends SampleRobot {
     AnalogInput analogInput;
     AveragedBuiltInAccelerometer accel;
     Gyro gyro;
-    SerialPort serial;
+    
+    SerialPort tegraSerial;
+    SerialPort arduinoSerial;
+    
     Lift lift;
     Jaguar liftMotor;
     AnalogInput analogGyro,analogTemp;
@@ -34,14 +38,17 @@ public class Robot extends SampleRobot {
     Command autonomousCommand;
     SendableChooser chooser;
     
+    DriverStation.Alliance allianceColor;
+    
     
     
     
     public Robot() {
     	
-    	serial = new SerialPort(115200, SerialPort.Port.kOnboard);
-    	//myRobot = new RobotDrive(1, 2);
-        //myRobot.setExpiration(0.1);
+    	tegraSerial = new SerialPort(115200, SerialPort.Port.kOnboard);
+    	arduinoSerial = new SerialPort(115200, SerialPort.Port.kMXP);
+    	// myRobot = new RobotDrive(1, 2);
+        // myRobot.setExpiration(0.1);
         
         controller = new AccelerativeJoystick(0);
         /*
@@ -64,7 +71,7 @@ public class Robot extends SampleRobot {
         LM_BOTTOM = new DigitalInput(1);
         
         //initialize the lift
-        lift = new Lift(liftMotor,LM_TOP,LM_BOTTOM,controller,liftUpButtonNumber, liftDownButtonNumber, liftEmergencyStopButtonNumber);
+        lift = new Lift(liftMotor, LM_TOP, LM_BOTTOM, controller, liftUpButtonNumber, liftDownButtonNumber, liftEmergencyStopButtonNumber);
         
         gyro = new Gyro(0);
         
@@ -76,6 +83,8 @@ public class Robot extends SampleRobot {
         chooser.addObject("2 Tote Auto", "2");
         chooser.addObject("3 Tote Auto", "3");
         SmartDashboard.putData("Chooser", chooser);
+        
+        allianceColor = DriverStation.getInstance().getAlliance();
 
         
         
@@ -217,14 +226,14 @@ public class Robot extends SampleRobot {
     
     private Double getUpdatedVisionTargetDistance() {
     	//clear buffer
-    	serial.readString();
+    	tegraSerial.readString();
     	
     	int reps = 1;
     	
     	double sum = 0.0;
     	
     	for(int i=0;i<reps;i++) {
-    		String message = serial.readString();
+    		String message = tegraSerial.readString();
     		System.out.println(message);
     		double firstValue = 0.0;
     		try{
@@ -358,6 +367,27 @@ public class Robot extends SampleRobot {
         }
         
         myRobot.setSafetyEnabled(true);
+    }
+    
+    public void disabled() {
+    	while(!isEnabled()) {
+    		if (allianceColor != DriverStation.getInstance().getAlliance()) {
+    			allianceColor = DriverStation.getInstance().getAlliance();
+    			//Send message
+    			String message = "";
+    			if (allianceColor == DriverStation.Alliance.Blue) {
+    				// In the blue alliance
+    				message = "b";
+    			} else if (allianceColor == DriverStation.Alliance.Red) {
+    				// In the red alliance
+    				message = "r";
+    			} else {
+    				// Alliance not set.
+    				message = "d";
+    			}
+    			arduinoSerial.writeString(message);
+    		}
+    	}
     }
     
     private void driveIntoAutoZone() {

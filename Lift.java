@@ -2,15 +2,16 @@ package org.usfirst.frc.team4534.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Joystick;
+import org.usfirst.frc.team4534.robot.AccelerativeJoystick;
 
 public class Lift {
 	Jaguar liftMotor;
 	DigitalInput LM_TOP,LM_BOTTOM;
-	Joystick joystick;
+	AccelerativeJoystick joystick;
 	int upButton,downButton,stopButton;
 	
 	private final Double LIFT_SPEED = 0.3;
+	private final Double LIFT_INCREMENT = 0.05;
 	
 	public enum LiftState {
 		MOVING_UP,
@@ -22,7 +23,7 @@ public class Lift {
 	
 	private LiftState currentLiftState;
 	
-	public Lift(Jaguar liftMotor, DigitalInput LM_TOP, DigitalInput LM_BOTTOM, Joystick joystick, int upButton, int downButton, int stopButton) {
+	public Lift(Jaguar liftMotor, DigitalInput LM_TOP, DigitalInput LM_BOTTOM, AccelerativeJoystick joystick, int upButton, int downButton, int stopButton) {
 		//TODO:Constructor
 		
 		this.liftMotor = liftMotor;
@@ -71,6 +72,16 @@ public class Lift {
 	    //}
 	}
 	
+	public void move() {
+		double moveVal = joystick.getAcceleratedUpDownButtons(0, upButton, downButton, LIFT_INCREMENT, LIFT_SPEED);
+		//if (!touchingLimitUp() && !touchingLimitDown()) {
+			liftMotor.set(moveVal);
+			System.out.println("Lift moving: " + moveVal);
+		//} else {
+		//	liftMotor.set(0.0);
+		//}
+	}
+	
 	public void emergencyStop() {
 		liftMotor.set(0.0);
 		currentLiftState = LiftState.EMERGENCY_STOPPED;
@@ -84,8 +95,12 @@ public class Lift {
 		//SAFETY FIRST, check if the e-stop button is pressed
 		if(joystick.getRawButton(stopButton)) {
 			emergencyStop();
+		} else {
+			move();
 		}
 		
+		
+		/*
 		//next, check if the buttons are pressed
 		if(joystick.getRawButton(upButton)) {
 			moveUp();
@@ -94,6 +109,7 @@ public class Lift {
 		} else {
 			liftMotor.set(0.0);
 		}
+		*/
 		
 		/*
 		//next, check if the limit switches are pressed
