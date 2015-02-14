@@ -10,7 +10,7 @@ public class Lift {
 	Joystick joystick;
 	int upButton,downButton,stopButton;
 	
-	private final Double LIFT_SPEED = 0.2;
+	private final Double LIFT_SPEED = 0.3;
 	
 	public enum LiftState {
 		MOVING_UP,
@@ -50,23 +50,25 @@ public class Lift {
 	}
 	
 	public void moveUp() {
-		if (!touchingLimitUp()) {
+		System.out.println("lift.moveUp() " + LIFT_SPEED);
+		//if (!touchingLimitUp()) {
 	    	liftMotor.set(LIFT_SPEED);
-	    	currentLiftState = LiftState.MOVING_UP;
-		} else {
-	    	liftMotor.set(0.0);
-	    	currentLiftState = LiftState.UP;
-	    }
+	    //	currentLiftState = LiftState.MOVING_UP;
+		//} else {
+	    //	liftMotor.set(0.0);
+	    //	currentLiftState = LiftState.UP;
+	    //}
 	}
 	
 	public void moveDown() {
-		if (!touchingLimitDown()) {
+		System.out.println("lift.moveDown() -" + LIFT_SPEED);
+		//if (!touchingLimitDown()) {
 	    	liftMotor.set(-LIFT_SPEED);
-	    	currentLiftState = LiftState.MOVING_DOWN;
-		} else {
-	    	liftMotor.set(0.0);
-	    	currentLiftState = LiftState.DOWN;
-	    }
+	    //	currentLiftState = LiftState.MOVING_DOWN;
+		//} else {
+	    //	liftMotor.set(0.0);
+	    //	currentLiftState = LiftState.DOWN;
+	    //}
 	}
 	
 	public void emergencyStop() {
@@ -89,8 +91,11 @@ public class Lift {
 			moveUp();
 		} else if(joystick.getRawButton(downButton)) {
 			moveDown();
+		} else {
+			liftMotor.set(0.0);
 		}
 		
+		/*
 		//next, check if the limit switches are pressed
 		if(touchingLimitUp()) {
 			liftMotor.set(0.0);
@@ -101,6 +106,7 @@ public class Lift {
 			liftMotor.set(0.0);
 			currentLiftState = LiftState.DOWN;
 		}
+		*/
 		
 		
 	}

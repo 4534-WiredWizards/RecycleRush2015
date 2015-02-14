@@ -38,18 +38,21 @@ public class Robot extends SampleRobot {
     
     
     public Robot() {
+    	
     	serial = new SerialPort(115200, SerialPort.Port.kOnboard);
-    	myRobot = new RobotDrive(0, 1);
-        myRobot.setExpiration(0.1);
+    	//myRobot = new RobotDrive(1, 2);
+        //myRobot.setExpiration(0.1);
+        
         controller = new AccelerativeJoystick(0);
+        /*
         leftAxis = controller.getRawAxis(1);
         rightAxis = controller.getRawAxis(0);
         accel = new AveragedBuiltInAccelerometer();
         //serial 
+        */
         
         
-        
-        final Integer liftMotorPort = 2;
+        final Integer liftMotorPort = 0;
         final Integer liftUpButtonNumber = 4;
         final Integer liftDownButtonNumber = 1;
         final Integer liftEmergencyStopButtonNumber = 2;
@@ -86,13 +89,14 @@ public class Robot extends SampleRobot {
     	
     	controller.init();
     	
-        myRobot.setSafetyEnabled(true);
+        //myRobot.setSafetyEnabled(true);
 
         while (isOperatorControl() && isEnabled()) {
         	
         	//first, poll the lift
         	lift.poll();
         	
+        	/*
         	double axisX = controller.getAcceleratedAxis(1)*-1;
         	double axisY = controller.getAcceleratedAxis(0)*-1;
         	
@@ -116,6 +120,7 @@ public class Robot extends SampleRobot {
             outputStringToDash(3, Double.toString(accelxAvg));
             outputStringToDash(4, Double.toString(accelyAvg));
             outputStringToDash(5, Double.toString(accelzAvg));
+            */
         }
         
         
