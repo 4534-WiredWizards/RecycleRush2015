@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class AccelerativeJoystick extends Joystick {
 	public double heavyRumbleCount;
 	private Double[] storedInputArray;
+	private Double[] storedButtonArray;
 	
 	public AccelerativeJoystick(int port) {
 		
@@ -20,7 +21,8 @@ public class AccelerativeJoystick extends Joystick {
 		int axisCount = super.getAxisCount();
 				
 		storedInputArray = new Double[axisCount];
-				
+		storedButtonArray = new Double[1];
+		
 		for (int i=0;i<axisCount;i++) {
 			storedInputArray[i] = 0.0;
 			//System.out.println(Integer.toString(i));
@@ -29,18 +31,40 @@ public class AccelerativeJoystick extends Joystick {
 	
 	public Double getAcceleratedAxis(int axis) {
 		double currentValue = super.getRawAxis(axis);
-		int mode = 0;
-		//System.out.println(storedInputArray[2]);
+		
+		double incrementValue = 0.1;
+		double maxValue = 1.0;
+
 		if (super.getRawAxis(2) != 0) {
-			mode = 2;
+			incrementValue = 0.05;
+			maxValue = 0.7;
 		}
 		if (super.getRawAxis(3) != 0) {
-			mode = 3;
+			incrementValue = 0.5;
+			maxValue = 1.0;
 		}
 		
-		storedInputArray[axis] = accelerateValue(storedInputArray[axis],currentValue,mode);
+		storedInputArray[axis] = accelerateValue(storedInputArray[axis], currentValue, incrementValue, maxValue);
 		
 		return storedInputArray[axis];
+	}
+	
+	public Double getAcceleratedUpDownButtons(int key, int upButton, int downButton, double incrementValue, double maxValue) {
+		boolean currentValueUp = super.getRawButton(upButton);
+		boolean currentValueDown = super.getRawButton(downButton);
+
+		double actualValue = 0;
+		if (currentValueUp) {
+			actualValue += maxValue;
+		}
+		if (currentValueDown) {
+			actualValue -= maxValue;
+		}
+		
+		
+		storedButtonArray[key] = accelerateValue(storedButtonArray[key], actualValue, incrementValue, maxValue);
+		
+		return storedButtonArray[key];
 	}
 	
 	public void accelRumble() {
@@ -53,26 +77,10 @@ public class AccelerativeJoystick extends Joystick {
         }
 	}
 	
-	private Double accelerateValue(Double currentValue, Double targetValue, int mode) {
-		Double incrementValue = 0.1;
-		Double maxValue = 1.0;
-		if (mode == 2) {
-			// Precise mode
-			incrementValue = 0.05;
-			maxValue = 0.7;
-		} else if (mode == 3) {
-			// Fast mode
-			incrementValue = 0.5;
-			maxValue = 1.0;
-		}
-		System.out.println("mode "+Integer.toString(mode) + " inc: " + Double.toString(incrementValue) + " max: " + Double.toString(maxValue));
-
-		
+	private Double accelerateValue(Double currentValue, Double targetValue, Double incrementValue, Double maxValue) {
 		// If the difference between the target value and the current value 
     	// are less than the increment value, set the increment value to the difference.
     	incrementValue = Math.min(incrementValue, Math.abs(targetValue - currentValue));
-    	
-    	
     	
     	// Depending on whether the target is greater than or less than the
     	// current value, increment or decrement from the current value.
@@ -86,8 +94,6 @@ public class AccelerativeJoystick extends Joystick {
         // Lower and upper limits for the value
         currentValue = Math.min(maxValue, currentValue);
         currentValue = Math.max(-maxValue, currentValue);
-        
-        //System.out.println(mode);
         
     	return currentValue;
 	}
