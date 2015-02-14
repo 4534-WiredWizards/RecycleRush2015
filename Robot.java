@@ -126,7 +126,7 @@ public class Robot extends SampleRobot {
         double libertySlow = 15;
         double libertyMedium = 30;
     	if(scaledLiberties) {
-    		libertyStop = Math.ceil(ang/90);
+    		libertyStop = 1;/*Math.ceil(ang/90);*/
     		libertySlow = Math.ceil(ang/6);
     		libertyMedium = Math.ceil(ang/3);
     	}
@@ -159,7 +159,8 @@ public class Robot extends SampleRobot {
     		Double slowSpeed = 0.60;
     		Double fastSpeed = 0.80;
     		
-    		while((gyro.getAngle() < angle-libertyStop) && (gyro.getAngle() > angle+libertyStop) && isEnabled()) {
+    		//System.out.println(gyro.getAngle());
+    		
     		
     		while ((gyro.getAngle() < angle-libertyStop) && isEnabled()) {
     			Double speed = fastSpeed;
@@ -197,8 +198,8 @@ public class Robot extends SampleRobot {
     			outputStringToDash(0,Double.toString(gyro.getAngle()));
     		}
     		
-    		}
     		
+    	
     	}
     	
     	SmartDashboard.putNumber("Gyro", gyro.getAngle());
@@ -298,6 +299,7 @@ public class Robot extends SampleRobot {
     	//boolean rumble = true;
     	while (isTest() && isEnabled()) {
             liftMotor.set(controller.getAcceleratedAxis(1));
+    		
     	}
     }
     
@@ -333,9 +335,54 @@ public class Robot extends SampleRobot {
         			}
         			*/
         			//turn 180
-        			turn(180.0);
+        			turn(180.0,true);
+        			//delay part a sec
+        			Timer.delay(0.1);
+        			//correct turn
+        			turn(178.0-gyro.getAngle(),true);
         			//drive into auto zone
-        			//driveIntoAutoZone(0.75,3.0);
+        			driveIntoAutoZone(0.75,3.0);
+        			break;
+        		case 2:
+        			/*
+        			//lift crate
+        			lift.moveUp();
+        			//wait for stop
+        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+        				lift.poll();
+        			}
+        			*/
+        			//move back some
+        			driveIntoAutoZone(-0.8,1.0);
+        			//turn 90
+        			turn(90.0,true);
+        			//delay part a sec
+        			Timer.delay(0.1);
+        			//correct turn
+        			turn(88.0-gyro.getAngle(),true);
+        			//drive one crate distance
+        			driveOneCrateDistanceSideways();
+        			//turn -90
+        			turn(-90.0,true);
+        			//delay part a sec
+        			Timer.delay(0.1);
+        			//correct turn
+        			turn(-88.0-gyro.getAngle(),true);
+        			//align to crate
+        			visionTurn();
+        			//drive forward
+        			driveOneCrateDistanceForwards();
+        			/*
+        			//lift crate
+        			lift.moveUp();
+        			//wait for stop
+        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+        				lift.poll();
+        			}
+        			*/
+        			//drive into auto zone
+        			driveIntoAutoZone();
+        			break;
         			
         	}
         	
@@ -364,6 +411,14 @@ public class Robot extends SampleRobot {
     	myRobot.tankDrive(speed,speed);
     	Timer.delay(time);
     	myRobot.tankDrive(0.0, 0.0);
+    }
+    
+    private void driveOneCrateDistanceSideways() {
+    	driveIntoAutoZone(0.825,2.0);
+    }
+    
+    private void driveOneCrateDistanceForwards() {
+    	driveIntoAutoZone(0.775,1.0);
     }
     
     
