@@ -33,11 +33,11 @@ public class AccelerativeJoystick extends Joystick {
 		double currentValue = super.getRawAxis(axis);
 		
 		double incrementValue = 0.1;
-		double maxValue = 0.6;
+		double maxValue = 0.8;
 
 		if (super.getRawAxis(2) != 0) {
 			incrementValue = 0.05;
-			maxValue = 0.3;
+			maxValue = 0.5;
 		}
 		if (super.getRawAxis(3) != 0) {
 			incrementValue = 0.5;

@@ -169,9 +169,9 @@ public class Robot extends SampleRobot {
     		
     		myRobot.setSafetyEnabled(true);
     		
-    		Double mediumSpeed = 0.70;
-    		Double slowSpeed = 0.60;
-    		Double fastSpeed = 0.80;
+    		Double mediumSpeed = 0.60;
+    		Double slowSpeed = 0.50;
+    		Double fastSpeed = 0.70;
     		
     		//System.out.println(gyro.getAngle());
     		
@@ -351,18 +351,18 @@ public class Robot extends SampleRobot {
     	//turn -90
 		turn(-90.0,true);
 		//delay part a sec
-		Timer.delay(0.1);
+		Timer.delay(0.4);
 		//correct turn
-		turn(-88.0-gyro.getAngle(),true);
+		turn(-92.0-gyro.getAngle(),true);
     }
     
     public void turnRight() {
     	//turn 90
 		turn(90.0,true);
 		//delay part a sec
-		Timer.delay(0.1);
+		Timer.delay(0.4);
 		//correct turn
-		turn(88.0-gyro.getAngle(),true);
+		turn(92.0-gyro.getAngle(),true);
     }
     
     public void turnAround() {
@@ -505,20 +505,24 @@ public class Robot extends SampleRobot {
         			lift();
         			
         			//move back some
-        			driveIntoAutoZone(-0.8,1.0);
+        			//driveIntoAutoZone(-0.8,1.0);
 
-        			turnRight();
+        			turnLeft();
 
         			//drive one crate distance
-        			driveOneCrateDistanceSideways();
+        			driveOneCrateDistanceSideways(true);
         			
-        			turnLeft();
+        			turnRight();
+        			
+        			driveIntoAutoZone(-0.6, 0.5);
 
         			//align to crate
         			visionTurn();
         			
+        			driveIntoAutoZone(0.6, 0.5);
+        			
         			//drive forward
-        			driveOneCrateDistanceForwards();
+        			//driveOneCrateDistanceForwards();
         			
         			drop();
         			lift();
@@ -532,20 +536,24 @@ public class Robot extends SampleRobot {
         			lift();
         			
         			//move back some
-        			driveIntoAutoZone(-0.8,1.0);
+        			//driveIntoAutoZone(-0.8,1.0);
+        			
+        			turnLeft();
+        			
+        			//drive one crate distance
+        			driveOneCrateDistanceSideways(true);
         			
         			turnRight();
         			
-        			//drive one crate distance
-        			driveOneCrateDistanceSideways();
-        			
-        			turnLeft();
+        			driveIntoAutoZone(-0.8, 0.2);
         			
         			//align to crate
         			visionTurn();
         			
+        			driveIntoAutoZone(0.8, 0.2);
+        			
         			//drive forward
-        			driveOneCrateDistanceForwards();
+        			//driveOneCrateDistanceForwards();
         			
         			drop();
         			lift();
@@ -553,18 +561,22 @@ public class Robot extends SampleRobot {
         			//move back some
         			driveIntoAutoZone(-0.8,1.0);
         			
-        			turnRight();
+        			turnLeft();
         			
         			//drive one crate distance
-        			driveOneCrateDistanceSideways();
+        			driveOneCrateDistanceSideways(true);
         			
-        			turnLeft();
+        			turnRight();
+        			
+        			driveIntoAutoZone(-0.8, 0.2);
         			
         			//align to crate
         			visionTurn();
         			
+        			driveIntoAutoZone(0.8, 0.2);
+        			
         			//drive forward
-        			driveOneCrateDistanceForwards();
+        			//driveOneCrateDistanceForwards();
         			
         			drop();
         			lift();
@@ -628,7 +640,16 @@ public class Robot extends SampleRobot {
     }
     
     private void driveOneCrateDistanceSideways() {
-    	driveIntoAutoZone(0.825,2.0);
+    	driveOneCrateDistanceSideways(false);
+    }
+    
+    private void driveOneCrateDistanceSideways(boolean reversed) {
+    	if (reversed) {
+    		driveIntoAutoZone(-0.825,2.0);
+    	} else {
+    		driveIntoAutoZone(0.825,2.0);
+    	}
+    	
     }
     
     private void driveOneCrateDistanceForwards() {
