@@ -159,10 +159,6 @@ public class Robot extends SampleRobot {
     public void turn(Double ang, double libertyStop, double libertySlow, double libertyMedium) {
     	if (isEnabled()) {
     		
-    		
-    		
-    		
-    		
     		gyro.reset();
     		
     		Double angle = gyro.getAngle()+ang;
@@ -434,6 +430,30 @@ public class Robot extends SampleRobot {
     	return key;
     }
     
+    public void autoSequence() {
+    	
+    	turnLeft();
+
+		//drive one crate distance
+		driveOneCrateDistanceSideways(true);
+		
+		turnRight();
+		
+		driveIntoAutoZone(-0.6, 0.5);
+
+		//align to crate
+		visionTurn();
+		
+		driveOneCrateDistanceForwards();
+		
+		//drive forward
+		//driveOneCrateDistanceForwards();
+		
+		drop();
+		lift();
+    	
+    }
+    
     public void autonomous() {
     	myRobot.setSafetyEnabled(false);
     	
@@ -507,25 +527,7 @@ public class Robot extends SampleRobot {
         			//move back some
         			//driveIntoAutoZone(-0.8,1.0);
 
-        			turnLeft();
-
-        			//drive one crate distance
-        			driveOneCrateDistanceSideways(true);
-        			
-        			turnRight();
-        			
-        			driveIntoAutoZone(-0.6, 0.5);
-
-        			//align to crate
-        			visionTurn();
-        			
-        			driveIntoAutoZone(0.6, 0.5);
-        			
-        			//drive forward
-        			//driveOneCrateDistanceForwards();
-        			
-        			drop();
-        			lift();
+        			autoSequence();
         			
         			
         			//drive into auto zone
@@ -535,51 +537,9 @@ public class Robot extends SampleRobot {
         		case 3:
         			lift();
         			
-        			//move back some
-        			//driveIntoAutoZone(-0.8,1.0);
+        			autoSequence();
         			
-        			turnLeft();
-        			
-        			//drive one crate distance
-        			driveOneCrateDistanceSideways(true);
-        			
-        			turnRight();
-        			
-        			driveIntoAutoZone(-0.8, 0.2);
-        			
-        			//align to crate
-        			visionTurn();
-        			
-        			driveIntoAutoZone(0.8, 0.2);
-        			
-        			//drive forward
-        			//driveOneCrateDistanceForwards();
-        			
-        			drop();
-        			lift();
-        			
-        			//move back some
-        			driveIntoAutoZone(-0.8,1.0);
-        			
-        			turnLeft();
-        			
-        			//drive one crate distance
-        			driveOneCrateDistanceSideways(true);
-        			
-        			turnRight();
-        			
-        			driveIntoAutoZone(-0.8, 0.2);
-        			
-        			//align to crate
-        			visionTurn();
-        			
-        			driveIntoAutoZone(0.8, 0.2);
-        			
-        			//drive forward
-        			//driveOneCrateDistanceForwards();
-        			
-        			drop();
-        			lift();
+        			autoSequence();
         			
         			
         			//drive into auto zone
@@ -653,7 +613,7 @@ public class Robot extends SampleRobot {
     }
     
     private void driveOneCrateDistanceForwards() {
-    	driveIntoAutoZone(0.775,1.0);
+    	driveIntoAutoZone(0.775,0.75);
     }
     
     

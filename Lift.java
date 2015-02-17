@@ -10,7 +10,7 @@ public class Lift {
 	AccelerativeJoystick joystick;
 	int upButton,downButton,stopButton;
 	
-	private final Double LIFT_SPEED = 0.2;
+	private final Double LIFT_SPEED = 0.3;
 	private final Double LIFT_INCREMENT = 0.05;
 	
 	public enum LiftState {
@@ -51,9 +51,17 @@ public class Lift {
 	}
 	
 	public void moveUp() {
-		System.out.println("lift.moveUp() " + LIFT_SPEED);
+		double speed = .2;
+		if (joystick.getRawAxis(2) != 0) {
+			speed = .2;
+		}
+		if (joystick.getRawAxis(3) != 0) {
+			speed = .5;
+		}
+
+		System.out.println("lift.moveUp() " + speed);
 		//if (!touchingLimitUp()) {
-	    	liftMotor.set(LIFT_SPEED);
+	    	liftMotor.set(speed);
 	    //	currentLiftState = LiftState.MOVING_UP;
 		//} else {
 	    //	liftMotor.set(0.0);
@@ -62,9 +70,17 @@ public class Lift {
 	}
 	
 	public void moveDown() {
-		System.out.println("lift.moveDown() -" + LIFT_SPEED);
+		double speed = .2;
+		if (joystick.getRawAxis(2) != 0) {
+			speed = .2;
+		}
+		if (joystick.getRawAxis(3) != 0) {
+			speed = .5;
+		}
+		
+		System.out.println("lift.moveDown() -" + speed);
 		//if (!touchingLimitDown()) {
-	    	liftMotor.set(-LIFT_SPEED);
+	    	liftMotor.set(-speed);
 	    //	currentLiftState = LiftState.MOVING_DOWN;
 		//} else {
 	    //	liftMotor.set(0.0);
