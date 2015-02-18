@@ -87,6 +87,9 @@ public class AccelerativeJoystick extends Joystick {
 		System.out.println("target" + targetValue);
 		System.out.println("inc" + incrementValue);
 		System.out.println("max" + maxValue);
+		if (currentValue == null) {
+			currentValue = 0.0;
+		}
     	incrementValue = Math.min(incrementValue, Math.abs(targetValue - currentValue));
     	
     	// Depending on whether the target is greater than or less than the

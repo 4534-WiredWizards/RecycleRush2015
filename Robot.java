@@ -314,33 +314,26 @@ public class Robot extends SampleRobot {
     }
     
     public void lift() {
-    	Timer.delay(1.0);
-    	/*
 		//lift crate
 		lift.moveUp();
 		
-    	Should IR logic go here?
-    	
-		//wait for stop
-		while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
-			lift.poll(true);
-		}
-		*/
+		Timer.delay(1.5);
+		
+		
+		
     }
     
     public void drop() {
     	//Timer.delay(1.0);
-    	/*
+    	
     	//drop crate
     	lift.moveDown();
     	//wait for stop
     	
-    	Should IR logic go here?
-    	
     	while(lift.getCurrentLiftState() != Lift.LiftState.DOWN && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
     	   lift.poll(true);
     	}
-    	*/
+    	
     }
     
     public void turnLeft() {
@@ -439,8 +432,15 @@ public class Robot extends SampleRobot {
 		
 		turnRight();
 		
+		
+		
 		driveIntoAutoZone(-0.6, 0.5);
 
+		//wait for stop
+		while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+			lift.poll(true);
+		}
+		
 		//align to crate
 		visionTurn();
 		
@@ -514,14 +514,23 @@ public class Robot extends SampleRobot {
         			driveIntoAutoZone(-0.775,3.0);
         			
         		case 1:
+        			//driveIntoAutoZone(.6,.6);
+        			
         			lift();
         			
         			
         			//drive into auto zone
-        			//driveIntoAutoZone(0.75,3.0);
+        			driveIntoAutoZone();
+        			
+        			//wait for stop
+        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+        				lift.poll(true);
+        			}
         			break;
         			
         		case 2:
+        			//driveIntoAutoZone(.6,.6);
+        			
         			lift();
         			
         			//move back some
@@ -532,9 +541,15 @@ public class Robot extends SampleRobot {
         			
         			//drive into auto zone
         			//driveIntoAutoZone();
+        			//wait for stop
+        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+        				lift.poll(true);
+        			}
         			break;
         			
         		case 3:
+        			//driveIntoAutoZone(.6,.6);
+        			
         			lift();
         			
         			autoSequence();
@@ -544,6 +559,10 @@ public class Robot extends SampleRobot {
         			
         			//drive into auto zone
         			//driveIntoAutoZone();
+        			//wait for stop
+        			while(lift.getCurrentLiftState() != Lift.LiftState.UP && lift.getCurrentLiftState() != Lift.LiftState.EMERGENCY_STOPPED) {
+        				lift.poll(true);
+        			}
         			break;
         			
         	}
@@ -568,6 +587,7 @@ public class Robot extends SampleRobot {
     
     public void disabled() {
     	while(!isEnabled()) {
+    		//System.out.println(allianceColor);
     		if (allianceColor != DriverStation.getInstance().getAlliance()) {
     			allianceColor = DriverStation.getInstance().getAlliance();
     			//Send message
@@ -582,7 +602,9 @@ public class Robot extends SampleRobot {
     				// Alliance not set.
     				message = "d";
     			}
-    			arduinoSerial.writeString(message);
+    			System.out.println("message: "+message);
+    			int arduinoReturnVal = arduinoSerial.writeString(message);
+    			System.out.println(arduinoReturnVal);
     		}
     	}
     }
@@ -595,7 +617,10 @@ public class Robot extends SampleRobot {
     	//this code drives into the auto zone
     	//speed *= 0.75;
     	myRobot.tankDrive(speed,speed);
-    	Timer.delay(time);
+    	for(int i=0;i<1000;i++) {
+    		Timer.delay(time/1000);
+    		lift.poll();
+    	}
     	myRobot.tankDrive(0.0, 0.0);
     }
     
@@ -604,10 +629,11 @@ public class Robot extends SampleRobot {
     }
     
     private void driveOneCrateDistanceSideways(boolean reversed) {
+    	double duration = 1.75;
     	if (reversed) {
-    		driveIntoAutoZone(-0.825,2.0);
+    		driveIntoAutoZone(-0.825, duration);
     	} else {
-    		driveIntoAutoZone(0.825,2.0);
+    		driveIntoAutoZone(0.825, duration);
     	}
     	
     }

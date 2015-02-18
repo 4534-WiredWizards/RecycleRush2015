@@ -51,7 +51,7 @@ public class Lift {
 	}
 	
 	public void moveUp() {
-		double speed = .2;
+		double speed = .3;
 		if (joystick.getRawAxis(2) != 0) {
 			speed = .2;
 		}
@@ -60,43 +60,43 @@ public class Lift {
 		}
 
 		System.out.println("lift.moveUp() " + speed);
-		//if (!touchingLimitUp()) {
+		if (!touchingLimitUp()) {
 	    	liftMotor.set(speed);
-	    //	currentLiftState = LiftState.MOVING_UP;
-		//} else {
-	    //	liftMotor.set(0.0);
-	    //	currentLiftState = LiftState.UP;
-	    //}
+	    	currentLiftState = LiftState.MOVING_UP;
+		} else {
+			liftMotor.set(0.0);
+	    	currentLiftState = LiftState.UP;
+	    }
 	}
 	
 	public void moveDown() {
-		double speed = .2;
+		double speed = .3;
 		if (joystick.getRawAxis(2) != 0) {
 			speed = .2;
 		}
 		if (joystick.getRawAxis(3) != 0) {
-			speed = .5;
+			speed = .6;
 		}
 		
 		System.out.println("lift.moveDown() -" + speed);
-		//if (!touchingLimitDown()) {
+		if (!touchingLimitDown()) {
 	    	liftMotor.set(-speed);
-	    //	currentLiftState = LiftState.MOVING_DOWN;
-		//} else {
-	    //	liftMotor.set(0.0);
-	    //	currentLiftState = LiftState.DOWN;
-	    //}
+	    	currentLiftState = LiftState.MOVING_DOWN;
+		} else {
+	    	liftMotor.set(0.0);
+	    	currentLiftState = LiftState.DOWN;
+	    }
 	}
 	
 	public void move() {
 		
 		double moveVal = joystick.getAcceleratedUpDownButtons(0, upButton, downButton, LIFT_INCREMENT, LIFT_SPEED);
-		//if (!touchingLimitUp() && !touchingLimitDown()) {
+		if (!touchingLimitUp() && !touchingLimitDown()) {
 			liftMotor.set(moveVal);
 			System.out.println("Lift moving: " + moveVal);
-		//} else {
-		//	liftMotor.set(0.0);
-		//}
+		} else {
+			liftMotor.set(0.0);
+		}
 	}
 	
 	public void emergencyStop() {
@@ -114,46 +114,47 @@ public class Lift {
 		//This function needs to be called continuously to ensure the lift shuts off when it does
 		
 		//SAFETY FIRST, check if the e-stop button is pressed
-		/*if(joystick.getRawButton(stopButton)) {
+		if(joystick.getRawButton(stopButton)) {
 			emergencyStop();
 		} else {
 			if (!autoMode) {
-				move();
+				//move();
 			}
+		}
+		
+		if(joystick.getRawButton(upButton)) {
+			moveUp();
+		} else if(joystick.getRawButton(downButton)) {
+			moveDown();
+		}/* else {
+			liftMotor.set(0.0);
 		}*/
-		
-		if(joystick.getRawButton(upButton)) {
-			moveUp();
-		} else if(joystick.getRawButton(downButton)) {
-			moveDown();
-		} else {
-			liftMotor.set(0.0);
+		if(joystick.getRawAxis(3) != 0.0 && !touchingLimitUp() && !touchingLimitDown()) {
+			if(currentLiftState == LiftState.MOVING_UP) {
+				liftMotor.set(LIFT_SPEED+0.2);
+			} else if(currentLiftState == LiftState.MOVING_DOWN){
+				liftMotor.set(-(LIFT_SPEED+0.2));
+			}
+		} else if(!touchingLimitUp() && !touchingLimitDown()){
+			if(currentLiftState == LiftState.MOVING_UP) {
+				liftMotor.set(LIFT_SPEED);
+			} else if(currentLiftState == LiftState.MOVING_DOWN){
+				liftMotor.set(-LIFT_SPEED);
+			}
 		}
 		
 		
-		/*
-		//next, check if the buttons are pressed
-		if(joystick.getRawButton(upButton)) {
-			moveUp();
-		} else if(joystick.getRawButton(downButton)) {
-			moveDown();
-		} else {
-			liftMotor.set(0.0);
-		}
-		*/
-		
-		/*
 		//next, check if the limit switches are pressed
-		if(touchingLimitUp()) {
+		if(touchingLimitUp() && currentLiftState == LiftState.MOVING_UP) {
 			liftMotor.set(0.0);
 			currentLiftState = LiftState.UP;
 		}
 		
-		if(touchingLimitDown()) {
+		if(touchingLimitDown() && currentLiftState == LiftState.MOVING_DOWN) {
 			liftMotor.set(0.0);
 			currentLiftState = LiftState.DOWN;
 		}
-		*/
+		
 		
 		
 	}
